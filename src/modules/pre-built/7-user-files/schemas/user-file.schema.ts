@@ -8,7 +8,7 @@ import { UploadType } from "~types/upload-type";
 @Schema({
   timestamps: true,
   versionKey: false,
-  collection: "userfiles",
+  collection: "user_files",
 })
 export class UserFile {
   @Prop({ type: SchemaTypes.ObjectId, ref: "User", required: true })

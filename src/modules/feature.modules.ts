@@ -1,5 +1,6 @@
 import { BusCompanyModule } from "~modules/1-bus_companies/bus_company.module";
 import { BookingModule } from "~modules/10-bookings/booking.module";
+import { BannerModule } from "~modules/11-banners/banner.module";
 import { VehicleModule } from "~modules/2-vehicles/vehicle.module";
 import { SeatModule } from "~modules/3-seats/seat.module";
 import { StopLocationModule } from "~modules/4-stop_locations/stop_location.module";
@@ -55,4 +56,5 @@ export const FeatureModules = [
   TripStopModule,
   TripPriceModule,
   BookingModule,
+  BannerModule,
 ];

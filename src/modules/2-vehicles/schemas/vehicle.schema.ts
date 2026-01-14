@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { HydratedDocument, SchemaTypes } from "mongoose";
+import { BusCompany } from "~modules/1-bus_companies/schemas/bus_company.schema";
+import { VehicleLevelEnum } from "~modules/2-vehicles/enums/vehicle-level.enum";
+import { VehicleStatusEnum } from "~modules/2-vehicles/enums/vehicle-status.enum";
 
 @Schema({
   timestamps: true,
@@ -7,35 +11,26 @@ import { HydratedDocument } from "mongoose";
   collection: "vehicles",
 })
 export class Vehicle {
-  @Prop({ type: String, required: true })
-  readonly name: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: BusCompany.name, required: true })
+  companyId: ObjectId;
 
   @Prop({ type: String, required: true })
-  readonly nameEn: string;
+  plateNumber: string;
 
-  @Prop({ type: String, required: true })
-  readonly fullName: string;
+  @Prop({ type: String, enum: VehicleLevelEnum, default: VehicleLevelEnum.SLEEPER })
+  level: VehicleLevelEnum = VehicleLevelEnum.SLEEPER;
 
-  @Prop({ type: String, required: true })
-  readonly fullNameEn: string;
+  @Prop({ type: Number, default: 0 })
+  totalSeat: number = 0;
 
-  @Prop({ type: String, required: true, unique: true })
-  readonly codeName: string;
+  @Prop({ type: Boolean, default: false })
+  hasUpperDeck: boolean = false;
 
-  @Prop({ type: Number, required: true })
-  readonly sortOrder: number;
+  @Prop({ type: String, enum: VehicleStatusEnum, default: VehicleStatusEnum.ACTIVE })
+  status: VehicleStatusEnum = VehicleStatusEnum.ACTIVE;
 
-  @Prop({ type: String })
-  readonly administrativeUnit?: string;
-
-  @Prop({ type: String })
-  readonly administrativeUnitEn?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegion?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegionEn?: string;
+  @Prop({ type: [String] })
+  amenities: string[]; // wifi, tv, massage, water...
 }
 
 export type VehicleDocument = Vehicle & HydratedDocument<Vehicle>;

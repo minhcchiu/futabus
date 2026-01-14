@@ -16,7 +16,7 @@ export const SCHEMA_TYPE_MAP = {
   Number: "Number",
   Boolean: "Boolean",
   Date: "Date",
-  ObjectId: "SchemaTypes.ObjectId",
+  ObjectId: "String",
   Mixed: "SchemaTypes.Mixed",
 };
 

@@ -1,5 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { HydratedDocument, SchemaTypes } from "mongoose";
+import { LocationDto } from "~common/dto/location.dto";
+import { Ward } from "~modules/pre-built/10-wards/schemas/ward.schema";
+import { Province } from "~modules/pre-built/8-provinces/schemas/province.schema";
+import { District } from "~modules/pre-built/9-districts/schemas/district.schema";
 
 @Schema({
   timestamps: true,
@@ -8,35 +13,25 @@ import { HydratedDocument } from "mongoose";
 })
 export class StopLocation {
   @Prop({ type: String, required: true })
-  readonly name: string;
+  name: string;
 
   @Prop({ type: String, required: true })
-  readonly nameEn: string;
+  address: string;
 
-  @Prop({ type: String, required: true })
-  readonly fullName: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: Province.name, required: true })
+  provinceId: ObjectId;
 
-  @Prop({ type: String, required: true })
-  readonly fullNameEn: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: District.name })
+  districtId?: ObjectId;
 
-  @Prop({ type: String, required: true, unique: true })
-  readonly codeName: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: Ward.name })
+  wardId?: ObjectId;
 
-  @Prop({ type: Number, required: true })
-  readonly sortOrder: number;
-
-  @Prop({ type: String })
-  readonly administrativeUnit?: string;
-
-  @Prop({ type: String })
-  readonly administrativeUnitEn?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegion?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegionEn?: string;
+  @Prop({ type: { type: String, coordinates: [Number] } })
+  location?: LocationDto;
 }
 
 export type StopLocationDocument = StopLocation & HydratedDocument<StopLocation>;
 export const StopLocationSchema = SchemaFactory.createForClass(StopLocation);
+
+StopLocationSchema.index({ location: "2dsphere" });

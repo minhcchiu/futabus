@@ -5,7 +5,7 @@ import { HydratedDocument, SchemaTypes } from "mongoose";
 @Schema({
   timestamps: true,
   versionKey: false,
-  collection: "systemmenus",
+  collection: "system_menus",
 })
 export class SystemMenu {
   @Prop({ type: SchemaTypes.ObjectId, ref: SystemMenu.name })

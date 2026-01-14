@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { HydratedDocument, SchemaTypes } from "mongoose";
+import { BusCompanyStatusEnum } from "~modules/1-bus_companies/enums/bus-company-status.enum";
+import { User } from "~modules/pre-built/1-users/schemas/user.schema";
 
 @Schema({
   timestamps: true,
@@ -7,35 +10,26 @@ import { HydratedDocument } from "mongoose";
   collection: "bus_companies",
 })
 export class BusCompany {
-  @Prop({ type: String, required: true })
-  readonly name: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: User.name })
+  userId: ObjectId;
 
   @Prop({ type: String, required: true })
-  readonly nameEn: string;
+  name: string;
 
   @Prop({ type: String, required: true })
-  readonly fullName: string;
+  hotline: string;
 
-  @Prop({ type: String, required: true })
-  readonly fullNameEn: string;
-
-  @Prop({ type: String, required: true, unique: true })
-  readonly codeName: string;
-
-  @Prop({ type: Number, required: true })
-  readonly sortOrder: number;
+  @Prop({ type: [String] })
+  hotlineList?: string[];
 
   @Prop({ type: String })
-  readonly administrativeUnit?: string;
+  description?: string;
 
   @Prop({ type: String })
-  readonly administrativeUnitEn?: string;
+  policy?: string;
 
-  @Prop({ type: String })
-  readonly administrativeRegion?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegionEn?: string;
+  @Prop({ type: String, enum: BusCompanyStatusEnum, default: BusCompanyStatusEnum.ACTIVE })
+  status?: BusCompanyStatusEnum;
 }
 
 export type BusCompanyDocument = BusCompany & HydratedDocument<BusCompany>;

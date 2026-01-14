@@ -26,7 +26,7 @@ export class Notification {
   @Prop({ type: String })
   entityType: string;
 
-  @Prop({ type: SchemaTypes.ObjectId })
+  @Prop({ type: String })
   entityId: ObjectId;
 
   @Prop({ type: String, required: true })

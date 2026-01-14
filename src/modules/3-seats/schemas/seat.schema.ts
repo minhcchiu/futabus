@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { HydratedDocument, SchemaTypes } from "mongoose";
+import { Vehicle } from "~modules/2-vehicles/schemas/vehicle.schema";
 
 @Schema({
   timestamps: true,
@@ -7,35 +9,20 @@ import { HydratedDocument } from "mongoose";
   collection: "seats",
 })
 export class Seat {
-  @Prop({ type: String, required: true })
-  readonly name: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: Vehicle.name, required: true })
+  vehicleId: ObjectId;
 
   @Prop({ type: String, required: true })
-  readonly nameEn: string;
+  code: string;
+
+  @Prop({ type: Number, enum: [1, 2], required: true })
+  floor: number;
 
   @Prop({ type: String, required: true })
-  readonly fullName: string;
+  row: string;
 
   @Prop({ type: String, required: true })
-  readonly fullNameEn: string;
-
-  @Prop({ type: String, required: true, unique: true })
-  readonly codeName: string;
-
-  @Prop({ type: Number, required: true })
-  readonly sortOrder: number;
-
-  @Prop({ type: String })
-  readonly administrativeUnit?: string;
-
-  @Prop({ type: String })
-  readonly administrativeUnitEn?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegion?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegionEn?: string;
+  column: string;
 }
 
 export type SeatDocument = Seat & HydratedDocument<Seat>;

@@ -18,7 +18,7 @@ export class User implements IUser {
   roleIds: ObjectId[];
 
   @Prop({
-    type: SchemaTypes.ObjectId,
+    type: String,
     ref: MenuGroup.name,
   })
   menuGroupId?: ObjectId;
