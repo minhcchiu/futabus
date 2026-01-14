@@ -14,5 +14,5 @@ export class LocationDto {
   @ArrayMinSize(2)
   @ArrayMaxSize(2)
   @IsNumber({}, { each: true })
-  coordinates: number[];
+  coordinates: number[]; // [longitude, latitude]
 }

@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { HydratedDocument, SchemaTypes } from "mongoose";
+import { StopLocation } from "~modules/4-stop_locations/schemas/stop_location.schema";
+import { Route } from "~modules/5-routes/schemas/route.schema";
 
 @Schema({
   timestamps: true,
@@ -7,35 +10,23 @@ import { HydratedDocument } from "mongoose";
   collection: "route_stops",
 })
 export class RouteStop {
-  @Prop({ type: String, required: true })
-  readonly name: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: Route.name })
+  routeId: ObjectId;
 
-  @Prop({ type: String, required: true })
-  readonly nameEn: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: StopLocation.name })
+  stopLocationId: ObjectId;
 
-  @Prop({ type: String, required: true })
-  readonly fullName: string;
+  @Prop({ type: Number, default: 0 })
+  order: number = 0;
 
-  @Prop({ type: String, required: true })
-  readonly fullNameEn: string;
+  @Prop({ type: Boolean, default: false })
+  isPickup: boolean = false;
 
-  @Prop({ type: String, required: true, unique: true })
-  readonly codeName: string;
+  @Prop({ type: Boolean, default: false })
+  isDropOff: boolean = false;
 
-  @Prop({ type: Number, required: true })
-  readonly sortOrder: number;
-
-  @Prop({ type: String })
-  readonly administrativeUnit?: string;
-
-  @Prop({ type: String })
-  readonly administrativeUnitEn?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegion?: string;
-
-  @Prop({ type: String })
-  readonly administrativeRegionEn?: string;
+  @Prop({ type: Number, default: 0 })
+  distanceFromStart: number = 0;
 }
 
 export type RouteStopDocument = RouteStop & HydratedDocument<RouteStop>;

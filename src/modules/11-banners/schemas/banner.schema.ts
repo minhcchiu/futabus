@@ -13,8 +13,14 @@ export class Banner {
   @Prop({ type: String, required: true })
   image: string;
 
+  @Prop({ type: String })
+  link?: string;
+
   @Prop({ type: Boolean, default: true })
-  isShow?: boolean;
+  isShow: boolean = true;
+
+  @Prop({ type: Number, unique: true })
+  position: number;
 }
 
 export type BannerDocument = Banner & HydratedDocument<Banner>;
