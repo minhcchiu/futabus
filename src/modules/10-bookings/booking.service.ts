@@ -42,7 +42,10 @@ export class BookingService extends BaseService<BookingDocument> {
       delete body.paymentInfo;
     }
 
-    if (body.status === BookingStatus.CONFIRMED && body.paymentInfo.method === PaymentMethod.CASH) {
+    if (
+      body.status === BookingStatus.CONFIRMED &&
+      body?.paymentInfo?.method === PaymentMethod.CASH
+    ) {
       body.expireAt = Date.now() + 1 * 60 * 60 * 1000;
     }
 
@@ -68,7 +71,7 @@ export class BookingService extends BaseService<BookingDocument> {
         },
       ],
     });
-    if (booking.paymentInfo.status === PaymentStatus.PAID) {
+    if (booking.paymentInfo?.status === PaymentStatus.PAID) {
       await this.mailService.sendBookingMail(booking as any);
     }
     return booking;
