@@ -17,6 +17,9 @@ export class Route {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: StopLocation.name })
   endStopId: ObjectId;
+
+  @Prop({ type: Number })
+  durationMinutes?: number;
 }
 
 export type RouteDocument = Route & HydratedDocument<Route>;
