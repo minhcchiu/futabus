@@ -1845,6 +1845,12 @@
     socket.io "4.8.1"
     tslib "2.8.1"
 
+"@nestjs/schedule@nestjs/schedule":
+  version "6.1.0"
+  resolved "https://codeload.github.com/nestjs/schedule/tar.gz/03370e287430a7f80f7d0f5a140fcbb225c5e53c"
+  dependencies:
+    cron "4.3.5"
+
 "@nestjs/schematics@^10.0.0", "@nestjs/schematics@^10.0.1":
   version "10.2.3"
   resolved "https://registry.npmmirror.com/@nestjs/schematics/-/schematics-10.2.3.tgz#6053f43c5065b9e825cd08c4db1bf6bcbc9a6a62"
@@ -2739,6 +2745,11 @@
   version "4.0.2"
   resolved "https://registry.npmmirror.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
   integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
+
+"@types/luxon@~3.7.0":
+  version "3.7.1"
+  resolved "https://registry.npmmirror.com/@types/luxon/-/luxon-3.7.1.tgz#ef51b960ff86801e4e2de80c68813a96e529d531"
+  integrity sha512-H3iskjFIAn5SlJU7OuxUmTEpebK6TKB8rxZShDslBMZJ5u9S//KM1sbdAisiSrqwLQncVjnpi2OK2J51h+4lsg==
 
 "@types/methods@^1.1.4":
   version "1.1.4"
@@ -4117,6 +4128,14 @@ create-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
+
+cron@4.3.5:
+  version "4.3.5"
+  resolved "https://registry.npmmirror.com/cron/-/cron-4.3.5.tgz#53112ec0f5260722b89633ed72f005dc782864f1"
+  integrity sha512-hKPP7fq1+OfyCqoePkKfVq7tNAdFwiQORr4lZUHwrf0tebC65fYEeWgOrXOL6prn1/fegGOdTfrM6e34PJfksg==
+  dependencies:
+    "@types/luxon" "~3.7.0"
+    luxon "~3.7.0"
 
 cross-spawn@^6.0.0:
   version "6.0.6"
@@ -6830,6 +6849,11 @@ lru-memoizer@^2.2.0:
   dependencies:
     lodash.clonedeep "^4.5.0"
     lru-cache "6.0.0"
+
+luxon@~3.7.0:
+  version "3.7.2"
+  resolved "https://registry.npmmirror.com/luxon/-/luxon-3.7.2.tgz#d697e48f478553cca187a0f8436aff468e3ba0ba"
+  integrity sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew==
 
 magic-string@0.30.8:
   version "0.30.8"

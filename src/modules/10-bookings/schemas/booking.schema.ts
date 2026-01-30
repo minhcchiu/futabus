@@ -5,6 +5,7 @@ import { CustomerInfoDto, PaymentInfoDto } from "~modules/10-bookings/dto/create
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
 import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
+import { generateBookingCode, getNextSettBooking } from "~modules/10-bookings/helpers/booking-code";
 import { Seat } from "~modules/3-seats/schemas/seat.schema";
 import { Trip } from "~modules/7-trips/schemas/trip.schema";
 import { TripStop } from "~modules/8-trip_stop/schemas/trip_stop.schema";
@@ -15,6 +16,12 @@ import { TripStop } from "~modules/8-trip_stop/schemas/trip_stop.schema";
   collection: "bookings",
 })
 export class Booking {
+  @Prop({ type: String, index: true, default: generateBookingCode })
+  code: string;
+
+  @Prop({ type: Number, default: getNextSettBooking })
+  sttBooking: number;
+
   @Prop({ type: SchemaTypes.ObjectId, ref: Trip.name, required: true })
   tripId: ObjectId;
 

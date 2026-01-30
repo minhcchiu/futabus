@@ -1,5 +1,22 @@
 import { IsOptional, IsString } from "class-validator";
 
+export class BankInfoDto {
+  @IsOptional()
+  @IsString()
+  bankName: string;
+
+  @IsOptional()
+  @IsString()
+  accountNumber: string;
+
+  @IsOptional()
+  @IsString()
+  accountHolder: string;
+
+  @IsOptional()
+  @IsString()
+  qr: string;
+}
 export class CreateSettingDto {
   @IsOptional()
   @IsString()
@@ -39,9 +56,24 @@ export class CreateSettingDto {
 
   @IsOptional()
   @IsString()
+  mapLink: string;
+
+  @IsOptional()
+  @IsString()
   termsOfUse: string;
 
   @IsOptional()
   @IsString()
   privacyPolicy: string;
+
+  @IsOptional()
+  @IsString()
+  coverImage: string;
+
+  @IsOptional()
+  @IsString()
+  banner: string;
+
+  @IsOptional()
+  bankInfo: BankInfoDto;
 }

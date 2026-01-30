@@ -15,6 +15,7 @@ import { I18nConfigModule } from "src/i18n/i18n-config.module";
 import { AllExceptionsFilter } from "~exceptions/all-exception.filter";
 import { AqpMiddleware } from "~middlewares/aqp.middleware";
 import { FeatureModules } from "~modules/feature.modules";
+import CronModule from "~modules/pre-built/13-cron/cron.module";
 import { EventEmitterModule } from "~shared/event-emitters/event-emitter.module";
 import { FirebaseModule } from "~shared/firebase/firebase.module";
 import { LoggingInterceptor } from "~shared/interceptors";
@@ -51,6 +52,7 @@ import { LocalModule } from "./shared/storage/local-storage/local.module";
     CloudinaryModule,
     EventEmitterModule,
     I18nConfigModule,
+    CronModule,
 
     // Features
     ...FeatureModules,

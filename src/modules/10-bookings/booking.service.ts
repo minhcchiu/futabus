@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import { Model } from "mongoose";
 import { BaseService } from "~base-inherit/base.service";
 import { UpdateBookingDto } from "~modules/10-bookings/dto/update-booking.dto";
+import { setCurrentBooking } from "~modules/10-bookings/helpers/booking-code";
 import { MailService } from "~shared/mail/mail.service";
 import { PaymentStatus } from "./enums/payment-status.enum";
 import { Booking, BookingDocument } from "./schemas/booking.schema";
@@ -17,6 +18,17 @@ export class BookingService extends BaseService<BookingDocument> {
   ) {
     super(model);
     this.bookingService = this;
+  }
+
+  async setSttCurrentBooking() {
+    const latestBooking = await this.bookingService.findOne(
+      {},
+      {
+        sort: { sttBooking: -1 },
+      },
+    );
+
+    setCurrentBooking(latestBooking?.sttBooking || 0);
   }
 
   async updateBookingStatus(id: ObjectId, body: UpdateBookingDto) {
