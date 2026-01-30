@@ -60,10 +60,39 @@ export class SeatController {
   @Public()
   @Patch("/bulk")
   @HttpCode(HttpStatus.OK)
-  async updateMany(@Body() body: CreateSeatDto[]) {
-    await this.seatService.deleteMany({ vehicleId: body[0].vehicleId });
+  async updateMany(@Body() body: UpdateSeatDto[]) {
+    if (!body || body.length === 0) {
+      return {
+        updatedCount: 0,
+        createdCount: 0,
+      };
+    }
 
-    return this.seatService.createMany(body);
+    // 1️⃣ Update seats có _id
+    const bulkOps = body
+      .filter(item => item._id)
+      .map(item => ({
+        updateOne: {
+          filter: { _id: item._id },
+          update: { $set: item },
+        },
+      }));
+
+    if (bulkOps.length > 0) {
+      await this.seatService.bulkWrite(bulkOps);
+    }
+
+    // 2️⃣ Create seats mới (không có _id)
+    const newItems = body.filter(item => !item._id);
+
+    if (newItems.length > 0) {
+      await this.seatService.createMany(newItems);
+    }
+
+    return {
+      updatedCount: bulkOps.length,
+      createdCount: newItems.length,
+    };
   }
 
   @Public()
