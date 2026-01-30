@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId } from "mongodb";
 import { HydratedDocument, SchemaTypes } from "mongoose";
+import { BusCompany } from "~modules/1-bus_companies/schemas/bus_company.schema";
 import { Vehicle } from "~modules/2-vehicles/schemas/vehicle.schema";
 import { Route } from "~modules/5-routes/schemas/route.schema";
 import { TripStatus } from "~modules/7-trips/enums/trip-status.enum";
@@ -11,6 +12,9 @@ import { TripStatus } from "~modules/7-trips/enums/trip-status.enum";
   collection: "trips",
 })
 export class Trip {
+  @Prop({ type: SchemaTypes.ObjectId, ref: BusCompany.name })
+  companyId: ObjectId;
+
   @Prop({ type: SchemaTypes.ObjectId, ref: Route.name })
   routeId: ObjectId;
 
@@ -19,6 +23,12 @@ export class Trip {
 
   @Prop({ type: Number })
   departureTime: number;
+
+  @Prop({ type: Number })
+  arrivalTime: number;
+
+  @Prop({ type: Number })
+  price: number;
 
   @Prop({ type: String, enum: TripStatus, default: TripStatus.CREATED })
   status: TripStatus = TripStatus.CREATED;

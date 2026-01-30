@@ -2,6 +2,11 @@ import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
 import { differenceInMinutes } from "date-fns";
 import { EnvStatic } from "src/configurations/env.static";
+import { BookingDocument } from "~modules/10-bookings/schemas/booking.schema";
+import { SeatDocument } from "~modules/3-seats/schemas/seat.schema";
+import { StopLocationDocument } from "~modules/4-stop_locations/schemas/stop_location.schema";
+import { RouteDocument } from "~modules/5-routes/schemas/route.schema";
+import { TripDocument } from "~modules/7-trips/schemas/trip.schema";
 
 @Injectable()
 export class MailService {
@@ -75,6 +80,46 @@ export class MailService {
       template: "./verify/password-reset.template.hbs",
       context: { resetPasswordLink, expiresIn, fullName: body.fullName },
       from: from ?? `"${name}" <${defaults.from}>`,
+    };
+
+    // Send
+    return this.sendMail(options);
+  }
+
+  async sendBookingMail(
+    booking: BookingDocument & {
+      seatIds: SeatDocument[];
+      tripId: TripDocument & {
+        routeId: RouteDocument & {
+          startStopId: StopLocationDocument;
+          endStopId: StopLocationDocument;
+        };
+      };
+    },
+  ) {
+    const data = {
+      BOOKING_CODE: booking.departureTime,
+      CUSTOMER_NAME: booking.customerInfo.name,
+      CUSTOMER_PHONE: booking.customerInfo.phone,
+      START_STOP: booking.tripId.routeId.startStopId.name,
+      END_STOP: booking.tripId.routeId.endStopId.name,
+      SEATS: booking.seatIds.map((s: any) => s.name).join(", "),
+      DEPARTURE_TIME: booking.departureTime,
+      PAYMENT_METHOD: booking.paymentInfo.method,
+      PAYMENT_STATUS_COLOR: booking.paymentInfo.status,
+      PAYMENT_STATUS: booking.paymentInfo.status,
+      AMOUNT: booking.amount,
+      EXPIRE_TIME: booking.expireAt,
+      YEAR: new Date().getFullYear(),
+    };
+
+    // options
+    const options: ISendMailOptions = {
+      to: booking.customerInfo.email,
+      subject: "Booking confirmation",
+      template: "./booking/booking.template.hbs",
+      context: data,
+      from: `no-reply@futabus.com`,
     };
 
     // Send

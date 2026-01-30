@@ -9,7 +9,7 @@ import { UploadType } from "~types/upload-type";
 export class EventEmitterService {
   constructor(private eventEmitter: EventEmitter2) {}
 
-  emitFileUploaded(files: FileUploaded[], userId: ObjectId) {
+  emitFileUploaded(files: FileUploaded[], userId: ObjectId | null) {
     return this.eventEmitter.emit("file.uploaded", files, userId);
   }
 

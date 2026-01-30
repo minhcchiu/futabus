@@ -20,12 +20,6 @@ export class Vehicle {
   @Prop({ type: String, enum: VehicleLevelEnum, default: VehicleLevelEnum.SLEEPER })
   level: VehicleLevelEnum = VehicleLevelEnum.SLEEPER;
 
-  @Prop({ type: Number, default: 0 })
-  totalSeat: number = 0;
-
-  @Prop({ type: Boolean, default: false })
-  hasUpperDeck: boolean = false;
-
   @Prop({ type: String, enum: VehicleStatusEnum, default: VehicleStatusEnum.ACTIVE })
   status: VehicleStatusEnum = VehicleStatusEnum.ACTIVE;
 

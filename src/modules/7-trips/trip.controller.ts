@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { ParseObjectIdPipe } from "src/utils/parse-object-id.pipe";
 import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
@@ -18,7 +28,11 @@ export class TripController {
   @Get("/paginate")
   @HttpCode(HttpStatus.OK)
   async paginate(@GetAqp() { filter, ...options }: PaginationDto) {
-    return this.tripService.paginate(filter, options);
+    const result = await this.tripService.paginate(filter, options);
+
+    await this.tripService.assignTripPrices(result.data);
+
+    return result;
   }
 
   @Public()
@@ -28,23 +42,36 @@ export class TripController {
     @Param("id", ParseObjectIdPipe) id: ObjectId,
     @GetAqp() { projection, populate }: PaginationDto,
   ) {
-    return this.tripService.findById(id, { projection, populate });
+    const trip = await this.tripService.findById(id, { projection, populate, lean: true });
+
+    await Promise.all([
+      this.tripService.assignTripPrices([trip]),
+      this.tripService.assignTripStops([trip]),
+    ]);
+
+    return trip;
   }
 
   @Public()
   @Get("/")
   @HttpCode(HttpStatus.OK)
   async findMany(@GetAqp() { filter, ...options }: PaginationDto) {
-    return this.tripService.findMany(filter, options);
+    const trips = await this.tripService.findMany(filter, options);
+    await this.tripService.assignTripPrices(trips);
+
+    return trips;
   }
 
   //  ----- Method: POST -----
+  @Public()
+  @Post("/")
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateTripDto) {
     return this.tripService.create(body);
   }
 
   //  ----- Method: PATCH -----
+  @Public()
   @Patch("/:id")
   @HttpCode(HttpStatus.OK)
   async update(@Param("id", ParseObjectIdPipe) id: ObjectId, @Body() body: UpdateTripDto) {
@@ -52,6 +79,7 @@ export class TripController {
   }
 
   //  ----- Method: DELETE -----
+  @Public()
   @Delete("/:ids/bulk")
   @HttpCode(HttpStatus.OK)
   async deleteManyByIds(@Param("ids") ids: string) {

@@ -34,16 +34,22 @@ export class BaseService<T> {
     const { page, ...option } = options;
     const skip = (page - 1) * options?.limit;
 
-    Object.assign(option, { skip: option.skip || skip });
+    Object.assign(option, {
+      skip: option.skip || skip,
+      lean: option?.lean !== undefined ? option.lean : true,
+    });
 
     return this.model.find(filter, options?.projection, options);
   }
 
-  async findById(id: ObjectId, options?: QueryOptions<T>) {
+  async findById(id: ObjectId, options: QueryOptions<T> = {}) {
+    options.lean = options?.lean !== undefined ? options.lean : true;
     return this.model.findById(id, options?.projection, options);
   }
 
-  async findOne(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
+  async findOne(filter?: FilterQuery<T>, options: QueryOptions<T> = {}) {
+    options.lean = options?.lean !== undefined ? options.lean : true;
+
     return this.model.findOne(filter, options?.projection, options);
   }
 

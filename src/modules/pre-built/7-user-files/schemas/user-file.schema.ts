@@ -11,7 +11,7 @@ import { UploadType } from "~types/upload-type";
   collection: "user_files",
 })
 export class UserFile {
-  @Prop({ type: SchemaTypes.ObjectId, ref: "User", required: true })
+  @Prop({ type: SchemaTypes.ObjectId, ref: "User" })
   userId: ObjectId;
 
   @Prop({ type: [String], required: true })

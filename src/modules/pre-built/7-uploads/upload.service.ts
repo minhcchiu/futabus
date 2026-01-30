@@ -72,7 +72,11 @@ export class UploadService {
     };
   }
 
-  async uploadFile(fileInput: Express.Multer.File, userId: ObjectId, imageSizes?: ImageSize[]) {
+  async uploadFile(
+    fileInput: Express.Multer.File,
+    userId: ObjectId | null,
+    imageSizes?: ImageSize[],
+  ) {
     const fileSaved = await this._saveFile(fileInput, imageSizes);
 
     this.eventEmitterService.emitFileUploaded([fileSaved], userId);

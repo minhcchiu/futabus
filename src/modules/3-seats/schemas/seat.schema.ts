@@ -15,14 +15,23 @@ export class Seat {
   @Prop({ type: String, required: true })
   code: string;
 
+  @Prop({ type: String })
+  name?: string;
+
   @Prop({ type: Number, enum: [1, 2], required: true })
   floor: number;
 
-  @Prop({ type: String, required: true })
-  row: string;
+  @Prop({ type: Number, required: true })
+  row: number;
 
-  @Prop({ type: String, required: true })
-  column: string;
+  @Prop({ type: Number, required: true })
+  column: number;
+
+  @Prop({ default: false })
+  isVip: boolean;
+
+  @Prop({ default: true })
+  isActive: boolean;
 }
 
 export type SeatDocument = Seat & HydratedDocument<Seat>;

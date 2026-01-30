@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { SeatModule } from "~modules/3-seats/seat.module";
 import { Vehicle, VehicleSchema } from "./schemas/vehicle.schema";
 import { VehicleController } from "./vehicle.controller";
 import { VehicleService } from "./vehicle.service";
@@ -12,6 +13,7 @@ import { VehicleService } from "./vehicle.service";
         schema: VehicleSchema,
       },
     ]),
+    SeatModule,
   ],
   controllers: [VehicleController],
   providers: [VehicleService],

@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { MailModule } from "~shared/mail/mail.module";
 import { BookingController } from "./booking.controller";
 import { BookingService } from "./booking.service";
 import { Booking, BookingSchema } from "./schemas/booking.schema";
@@ -12,6 +13,7 @@ import { Booking, BookingSchema } from "./schemas/booking.schema";
         schema: BookingSchema,
       },
     ]),
+    MailModule,
   ],
   controllers: [BookingController],
   providers: [BookingService],

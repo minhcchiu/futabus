@@ -37,6 +37,9 @@ export class SeedService {
   ) {}
 
   async seedProvincesDistrictsWards() {
+    await this.provinceService.deleteMany({});
+    await this.districtService.deleteMany({});
+    await this.wardService.deleteMany({});
     const jsonPath = join(process.cwd(), "src", "utils", "json", "data_vn_units.json");
     const isFileExist = existsSync(jsonPath);
 

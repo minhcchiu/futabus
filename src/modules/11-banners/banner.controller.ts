@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { ParseObjectIdPipe } from "src/utils/parse-object-id.pipe";
 import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
@@ -39,6 +49,7 @@ export class BannerController {
   }
 
   //  ----- Method: POST -----
+  @Post("/")
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateBannerDto) {
     return this.bannerService.create(body);

@@ -9,7 +9,7 @@ export class CreateTripStopDto {
 
   @IsNotEmpty()
   @IsObjectId()
-  routeStopId: ObjectId;
+  stopId: ObjectId;
 
   @IsOptional()
   @IsNumber()

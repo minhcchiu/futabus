@@ -53,6 +53,28 @@ export class PaymentInfoDto {
   @IsOptional()
   @IsString()
   note?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+}
+
+export class CustomerInfoDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  phone: string;
+
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 export class CreateBookingDto {
   @IsNotEmpty()
@@ -60,8 +82,8 @@ export class CreateBookingDto {
   tripId: ObjectId;
 
   @IsNotEmpty()
-  @IsObjectId()
-  seatId: ObjectId;
+  @IsObjectId({ each: true })
+  seatIds: ObjectId[];
 
   @IsNotEmpty()
   @IsObjectId()
@@ -79,8 +101,21 @@ export class CreateBookingDto {
   @IsNumber()
   amount: number;
 
+  @IsOptional()
+  @IsNumber()
+  expireAt?: number;
+
+  @IsOptional()
+  @IsNumber()
+  departureTime?: number;
+
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => PaymentInfoDto)
   paymentInfo: PaymentInfoDto;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CustomerInfoDto)
+  customerInfo: CustomerInfoDto;
 }

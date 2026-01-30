@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsArray, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { ObjectId } from "mongodb";
 import { IsObjectId } from "~common/validators/objectId";
 import { VehicleLevelEnum } from "~modules/2-vehicles/enums/vehicle-level.enum";
@@ -15,12 +15,6 @@ export class CreateVehicleDto {
 
   @IsEnum(VehicleLevelEnum)
   level?: VehicleLevelEnum;
-
-  @IsNumber()
-  totalSeat?: number;
-
-  @IsBoolean()
-  hasUpperDeck?: boolean;
 
   @IsEnum(VehicleStatusEnum)
   status?: VehicleStatusEnum;

@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import { ObjectId } from "mongodb";
+import { Public } from "~common/decorators/public.decorator";
 import { GetCurrentUserId } from "~decorators/get-current-user-id.decorator";
 import { UploadDto } from "./dto/upload.dto";
 import { UploadService } from "./upload.service";
@@ -30,15 +31,15 @@ export class UploadController {
     return this.uploadService.uploadFiles(inputs, userId, body.imageSizes);
   }
 
+  @Public()
   @Post("file")
   @UseInterceptors(FileInterceptor("file"))
   @HttpCode(HttpStatus.CREATED)
   async uploadFile(
-    @GetCurrentUserId() userId: ObjectId,
     @Body() body: UploadDto,
     @UploadedFile()
     input: Express.Multer.File,
   ) {
-    return this.uploadService.uploadFile(input, userId, body.imageSizes);
+    return this.uploadService.uploadFile(input, null, body.imageSizes);
   }
 }

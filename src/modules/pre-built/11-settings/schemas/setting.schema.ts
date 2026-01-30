@@ -8,16 +8,40 @@ import { HydratedDocument } from "mongoose";
 })
 export class Setting {
   @Prop({ type: String })
-  logoUrl?: string;
+  zalo: string;
 
   @Prop({ type: String })
-  appName?: string;
+  phone: string;
 
   @Prop({ type: String })
-  termsOfUse?: string;
+  logo: string;
 
   @Prop({ type: String })
-  privacyPolicy?: string;
+  banner: string;
+
+  @Prop({ type: String })
+  email: string;
+
+  @Prop({ type: String })
+  shortName: string;
+
+  @Prop({ type: String })
+  fullName: string;
+
+  @Prop({ type: String })
+  website: string;
+
+  @Prop({ type: String })
+  fax: string;
+
+  @Prop({ type: String })
+  address: string;
+
+  @Prop({ type: String })
+  termsOfUse: string;
+
+  @Prop({ type: String })
+  privacyPolicy: string;
 }
 
 export type SettingDocument = Setting & HydratedDocument<Setting>;

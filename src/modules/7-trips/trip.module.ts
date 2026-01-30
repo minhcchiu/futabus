@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { TripStopModule } from "~modules/8-trip_stop/trip_stop.module";
+import { TripPriceModule } from "~modules/9-trip_prices/trip_price.module";
 import { Trip, TripSchema } from "./schemas/trip.schema";
 import { TripController } from "./trip.controller";
 import { TripService } from "./trip.service";
@@ -12,6 +14,8 @@ import { TripService } from "./trip.service";
         schema: TripSchema,
       },
     ]),
+    TripPriceModule,
+    TripStopModule,
   ],
   controllers: [TripController],
   providers: [TripService],

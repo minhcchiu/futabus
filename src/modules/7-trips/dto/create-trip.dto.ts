@@ -6,15 +6,27 @@ import { TripStatus } from "../enums/trip-status.enum";
 export class CreateTripDto {
   @IsNotEmpty()
   @IsObjectId()
+  companyId: ObjectId;
+
+  @IsNotEmpty()
+  @IsObjectId()
   routeId: ObjectId;
 
   @IsNotEmpty()
   @IsObjectId()
   vehicleId: ObjectId;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   departureTime: number;
+
+  @IsOptional()
+  @IsNumber()
+  arrivalTime: number;
+
+  @IsOptional()
+  @IsNumber()
+  price: number;
 
   @IsOptional()
   @IsEnum(TripStatus)

@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId } from "mongodb";
 import { HydratedDocument, SchemaTypes } from "mongoose";
-import { PaymentInfoDto } from "~modules/10-bookings/dto/create-booking.dto";
+import { CustomerInfoDto, PaymentInfoDto } from "~modules/10-bookings/dto/create-booking.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
 import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
 import { Seat } from "~modules/3-seats/schemas/seat.schema";
-import { StopLocation } from "~modules/4-stop_locations/schemas/stop_location.schema";
 import { Trip } from "~modules/7-trips/schemas/trip.schema";
+import { TripStop } from "~modules/8-trip_stop/schemas/trip_stop.schema";
 
 @Schema({
   timestamps: true,
@@ -18,20 +18,26 @@ export class Booking {
   @Prop({ type: SchemaTypes.ObjectId, ref: Trip.name, required: true })
   tripId: ObjectId;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: Seat.name, required: true })
-  seatId: ObjectId;
+  @Prop([{ type: SchemaTypes.ObjectId, ref: Seat.name, required: true }])
+  seatIds: ObjectId[];
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: StopLocation.name, required: true })
+  @Prop({ type: SchemaTypes.ObjectId, ref: TripStop.name })
   fromStopId: ObjectId;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: StopLocation.name, required: true })
+  @Prop({ type: SchemaTypes.ObjectId, ref: TripStop.name })
   toStopId: ObjectId;
+
+  @Prop({ type: Number })
+  departureTime: number;
 
   @Prop({ type: String, enum: BookingStatus, default: BookingStatus.PENDING })
   status: BookingStatus = BookingStatus.PENDING;
 
   @Prop({ type: Number, required: true })
   amount: number;
+
+  @Prop({ type: Number, default: () => Date.now() + 5 * 60 * 1000 })
+  expireAt: number;
 
   @Prop({
     type: {
@@ -45,9 +51,20 @@ export class Booking {
       refundAmount: { type: Number },
       refundedAt: { type: Date },
       note: { type: String }, // ghi chú quầy
+      image: { type: String },
     },
   })
   paymentInfo: PaymentInfoDto;
+
+  @Prop({
+    type: {
+      name: { type: String },
+      phone: { type: String },
+      email: { type: String },
+      note: { type: String },
+    },
+  })
+  customerInfo: CustomerInfoDto;
 }
 
 export type BookingDocument = Booking & HydratedDocument<Booking>;

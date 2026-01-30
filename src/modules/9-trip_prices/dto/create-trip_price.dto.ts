@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 import { ObjectId } from "mongodb";
 import { IsObjectId } from "~common/validators/objectId";
 
@@ -7,15 +7,19 @@ export class CreateTripPriceDto {
   @IsObjectId()
   tripId: ObjectId;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObjectId()
-  fromStopId: ObjectId;
+  fromStopId?: ObjectId;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObjectId()
-  toStopId: ObjectId;
+  toStopId?: ObjectId;
 
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @IsNotEmpty()
+  @IsObjectId()
+  seatId: ObjectId;
 }

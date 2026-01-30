@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { ParseObjectIdPipe } from "src/utils/parse-object-id.pipe";
 import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
@@ -39,12 +49,42 @@ export class TripPriceController {
   }
 
   //  ----- Method: POST -----
+  @Public()
+  @Post("/bulk")
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: CreateTripPriceDto) {
-    return this.tripPriceService.create(body);
+  async create(@Body() body: CreateTripPriceDto[]) {
+    return this.tripPriceService.createMany(body);
   }
 
   //  ----- Method: PATCH -----
+  @Public()
+  @Patch("/bulk")
+  @HttpCode(HttpStatus.OK)
+  async updateManyByIds(@Body() body: UpdateTripPriceDto[]) {
+    const bulkOpts = body
+      .filter(item => item._id)
+      .map(item => ({
+        updateOne: {
+          filter: { _id: item._id },
+          update: { $set: item },
+        },
+      }));
+
+    await this.tripPriceService.bulkWrite(bulkOpts);
+
+    const newItems = body.filter(item => !item._id);
+
+    if (newItems.length > 0) {
+      await this.tripPriceService.createMany(newItems);
+    }
+
+    return {
+      updatedCount: bulkOpts.length,
+      createdCount: newItems.length,
+    };
+  }
+
+  @Public()
   @Patch("/:id")
   @HttpCode(HttpStatus.OK)
   async update(@Param("id", ParseObjectIdPipe) id: ObjectId, @Body() body: UpdateTripPriceDto) {
@@ -52,6 +92,7 @@ export class TripPriceController {
   }
 
   //  ----- Method: DELETE -----
+  @Public()
   @Delete("/:ids/bulk")
   @HttpCode(HttpStatus.OK)
   async deleteManyByIds(@Param("ids") ids: string) {

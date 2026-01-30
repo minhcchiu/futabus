@@ -28,7 +28,7 @@ export class UserFileService extends BaseService<UserFileDocument> {
   }
 
   @OnEvent("file.uploaded")
-  createUserFile(files: FileUploaded[], userId: ObjectId) {
+  createUserFile(files: FileUploaded[], userId: ObjectId | null) {
     return this.userFileService.createMany(files.map(item => ({ ...item, userId })));
   }
 

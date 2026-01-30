@@ -42,6 +42,7 @@ export class SettingController {
   }
 
   //  ----- Method: POST -----
+  @Public()
   @Post("/")
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateSettingDto) {
@@ -49,6 +50,7 @@ export class SettingController {
   }
 
   //  ----- Method: PATCH -----
+  @Public()
   @Patch("/:id")
   @HttpCode(HttpStatus.OK)
   async update(@Param("id", ParseObjectIdPipe) id: ObjectId, @Body() body: UpdateSettingDto) {
@@ -56,6 +58,7 @@ export class SettingController {
   }
 
   //  ----- Method: DELETE -----
+  @Public()
   @Delete("/:ids/bulk")
   @HttpCode(HttpStatus.OK)
   async deleteManyByIds(@Param("ids") ids: string) {

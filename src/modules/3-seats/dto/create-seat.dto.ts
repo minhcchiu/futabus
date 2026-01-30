@@ -1,8 +1,12 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ObjectId } from "mongodb";
 import { IsObjectId } from "~common/validators/objectId";
 
 export class CreateSeatDto {
+  @IsOptional()
+  @IsObjectId()
+  _id?: ObjectId;
+
   @IsObjectId()
   @IsNotEmpty()
   vehicleId: ObjectId;
@@ -11,15 +15,27 @@ export class CreateSeatDto {
   @IsNotEmpty()
   code: string;
 
+  @IsOptional()
+  @IsString()
+  name: string;
+
   @IsNumber()
   @IsNotEmpty()
   floor: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  row: string;
+  row: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  column: string;
+  column: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isVip: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive: boolean;
 }
