@@ -7,7 +7,7 @@ import { CustomLoggerService } from "~shared/logger/custom-logger.service";
 export class CronService {
   constructor(private readonly logger: CustomLoggerService) {}
 
-  @Cron(CronExpression.EVERY)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   resetCurrentBooking() {
     resetSttBooking();
   }

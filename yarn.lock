@@ -1845,9 +1845,10 @@
     socket.io "4.8.1"
     tslib "2.8.1"
 
-"@nestjs/schedule@nestjs/schedule":
+"@nestjs/schedule@^6.1.0":
   version "6.1.0"
-  resolved "https://codeload.github.com/nestjs/schedule/tar.gz/03370e287430a7f80f7d0f5a140fcbb225c5e53c"
+  resolved "https://registry.npmmirror.com/@nestjs/schedule/-/schedule-6.1.0.tgz#4653383c6aaf82e19754eae281ec1036da41febe"
+  integrity sha512-W25Ydc933Gzb1/oo7+bWzzDiOissE+h/dhIAPugA39b9MuIzBbLybuXpc1AjoQLczO3v0ldmxaffVl87W0uqoQ==
   dependencies:
     cron "4.3.5"
 
