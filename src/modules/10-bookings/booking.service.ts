@@ -76,4 +76,46 @@ export class BookingService extends BaseService<BookingDocument> {
     }
     return booking;
   }
+
+  async getSeatsBookedByTripIds(tripIds: ObjectId[]) {
+    const now = new Date();
+
+    const results: {
+      _id: ObjectId;
+      seatIds: ObjectId[];
+    }[] = await this.bookingService.aggregate([
+      {
+        $match: {
+          tripId: { $in: tripIds },
+          $or: [
+            { status: { $in: [BookingStatus.COMPLETED, BookingStatus.CONFIRMED] } },
+            {
+              status: BookingStatus.PENDING,
+              expireAt: { $gt: now },
+            },
+          ],
+        },
+      },
+      { $unwind: "$seatIds" },
+      {
+        $group: {
+          _id: "$tripId",
+          seatIds: { $addToSet: "$seatIds" },
+        },
+      },
+    ]);
+
+    // Map lại cho dễ dùng
+    const map = new Map<string, ObjectId[]>();
+
+    for (const tripId of tripIds) {
+      map.set(tripId.toString(), []);
+    }
+
+    for (const row of results) {
+      map.set(row._id.toString(), row.seatIds);
+    }
+
+    return map;
+  }
 }

@@ -30,7 +30,10 @@ export class TripController {
   async paginate(@GetAqp() { filter, ...options }: PaginationDto) {
     const result = await this.tripService.paginate(filter, options);
 
-    await this.tripService.assignTripPrices(result.data);
+    await Promise.all([
+      this.tripService.assignTripPrices(result.data),
+      this.tripService.assignEmptySeatCount(result.data),
+    ]);
 
     return result;
   }
@@ -47,6 +50,7 @@ export class TripController {
     await Promise.all([
       this.tripService.assignTripPrices([trip]),
       this.tripService.assignTripStops([trip]),
+      this.tripService.assignEmptySeatCount([trip]),
     ]);
 
     return trip;
@@ -56,8 +60,11 @@ export class TripController {
   @Get("/")
   @HttpCode(HttpStatus.OK)
   async findMany(@GetAqp() { filter, ...options }: PaginationDto) {
-    const trips = await this.tripService.findMany(filter, options);
-    await this.tripService.assignTripPrices(trips);
+    const trips = await this.tripService.findMany(filter, { ...options, lean: true });
+    await Promise.all([
+      this.tripService.assignTripPrices(trips),
+      this.tripService.assignEmptySeatCount(trips),
+    ]);
 
     return trips;
   }
