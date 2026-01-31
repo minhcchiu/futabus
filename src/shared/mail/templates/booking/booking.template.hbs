@@ -1,31 +1,54 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thông tin đơn đặt vé</title>
+    <style type="text/css">
+      @media only screen and (max-width: 620px) {
+        .main-container {
+          width: 100% !important;
+          padding: 16px 8px !important;
+        }
+        .info-table td {
+          display: block !important;
+          width: 100% !important;
+          padding: 6px 0 !important;
+        }
+        .info-table td:first-child {
+          font-weight: bold;
+          padding-bottom: 2px !important;
+          width: auto !important;
+        }
+        .content-padding {
+          padding: 16px !important;
+        }
+        .header h2 {
+          font-size: 18px !important;
+        }
+      }
+    </style>
   </head>
   <body
-    style="
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f8;
-      font-family: Arial, Helvetica, sans-serif;
-    "
+    style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;"
   >
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
-        <td align="center" style="padding: 24px 12px">
+        <td align="center" class="main-container" style="padding:24px 12px">
           <!-- CONTAINER -->
           <table
-            width="600"
+            width="100%"
+            style="max-width:600px; background:#ffffff; border-radius:12px; overflow:hidden; margin:0 auto;"
             cellpadding="0"
             cellspacing="0"
-            style="background: #ffffff; border-radius: 12px; overflow: hidden"
           >
             <!-- HEADER -->
             <tr>
-              <td style="background: #16a34a; color: #ffffff; padding: 20px; text-align: center">
-                <h2 style="margin: 0; font-size: 20px">XÁC NHẬN ĐƠN ĐẶT VÉ</h2>
-                <p style="margin: 6px 0 0; font-size: 13px">
+              <td
+                style="background:#16a34a; color:#ffffff; padding:20px; text-align:center"
+                class="header"
+              >
+                <h2 style="margin:0; font-size:20px">XÁC NHẬN ĐƠN ĐẶT VÉ</h2>
+                <p style="margin:6px 0 0; font-size:13px">
                   Mã đơn:
                   <strong>{{BOOKING_CODE}}</strong>
                 </p>
@@ -34,12 +57,12 @@
 
             <!-- CONTENT -->
             <tr>
-              <td style="padding: 20px">
+              <td class="content-padding" style="padding:20px">
                 <!-- CUSTOMER -->
-                <h3 style="margin: 0 0 8px; font-size: 16px">👤 Thông tin khách hàng</h3>
-                <table width="100%" style="font-size: 14px">
+                <h3 style="margin:0 0 8px; font-size:16px">👤 Thông tin khách hàng</h3>
+                <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
-                    <td width="150">Họ tên:</td>
+                    <td>Họ tên:</td>
                     <td><strong>{{CUSTOMER_NAME}}</strong></td>
                   </tr>
                   <tr>
@@ -48,13 +71,13 @@
                   </tr>
                 </table>
 
-                <hr style="margin: 16px 0; border: none; border-top: 1px solid #eee" />
+                <hr style="margin:16px 0; border:none; border-top:1px solid #eee" />
 
                 <!-- TRIP -->
-                <h3 style="margin: 0 0 8px; font-size: 16px">🚌 Thông tin chuyến</h3>
-                <table width="100%" style="font-size: 14px">
+                <h3 style="margin:0 0 8px; font-size:16px">🚌 Thông tin chuyến</h3>
+                <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
-                    <td width="150">Tuyến:</td>
+                    <td>Tuyến:</td>
                     <td>{{START_STOP}} → {{END_STOP}}</td>
                   </tr>
                   <tr>
@@ -67,45 +90,45 @@
                   </tr>
                 </table>
 
-                <hr style="margin: 16px 0; border: none; border-top: 1px solid #eee" />
+                <hr style="margin:16px 0; border:none; border-top:1px solid #eee" />
 
                 <!-- PAYMENT -->
-                <h3 style="margin: 0 0 8px; font-size: 16px">💳 Thanh toán</h3>
-                <table width="100%" style="font-size: 14px">
+                <h3 style="margin:0 0 8px; font-size:16px">💳 Thanh toán</h3>
+                <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
-                    <td width="150">Phương thức:</td>
+                    <td>Phương thức:</td>
                     <td>{{PAYMENT_METHOD}}</td>
                   </tr>
                   <tr>
                     <td>Trạng thái:</td>
                     <td>
-                      <strong style="color: {{PAYMENT_STATUS_COLOR}}"> {{PAYMENT_STATUS}} </strong>
+                      <strong style="color: {{PAYMENT_STATUS_COLOR}}">{{PAYMENT_STATUS}}</strong>
                     </td>
                   </tr>
                   <tr>
                     <td>Tổng tiền:</td>
                     <td>
-                      <strong style="color: #16a34a"> {{AMOUNT}} đ </strong>
+                      <strong style="color:#16a34a">{{AMOUNT}}</strong>
                     </td>
                   </tr>
                 </table>
 
                 <!-- PAYMENT IMAGE -->
-                {{!-- {{#if PAYMENT_IMAGE}}
-                  <div style="margin-top: 16px">
-                    <p style="margin: 0 0 6px; font-size: 14px">📎 Ảnh thanh toán:</p>
+                {{#if PAYMENT_IMAGE}}
+                  <div style="margin-top:16px">
+                    <p style="margin:0 0 6px; font-size:14px">📎 Ảnh giao dịch:</p>
                     <img
                       src="{{PAYMENT_IMAGE}}"
-                      alt="Payment proof"
-                      style="max-width: 100%; border-radius: 8px; border: 1px solid #eee"
+                      alt="Ảnh giao dịch"
+                      style="max-width:100%; width:100%; height:auto; border-radius:8px; border:1px solid #eee; display:block;"
                     />
                   </div>
-                {{/if}} --}}
+                {{/if}}
 
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee" />
+                <hr style="margin:20px 0; border:none; border-top:1px solid #eee" />
 
                 <!-- FOOTER NOTE -->
-                <p style="font-size: 13px; color: #666; margin: 0">
+                <p style="font-size:13px; color:#666; margin:0">
                   ⏳ Đơn sẽ tự động huỷ nếu chưa thanh toán trước:
                   <strong>{{EXPIRE_TIME}}</strong>
                 </p>
@@ -115,13 +138,7 @@
             <!-- FOOTER -->
             <tr>
               <td
-                style="
-                  background: #f9fafb;
-                  text-align: center;
-                  padding: 14px;
-                  font-size: 12px;
-                  color: #888;
-                "
+                style="background:#f9fafb; text-align:center; padding:14px; font-size:12px; color:#888"
               >
                 ©
                 {{YEAR}}

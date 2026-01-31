@@ -7,8 +7,8 @@ import { UpdateBookingDto } from "~modules/10-bookings/dto/update-booking.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
 import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { setCurrentBooking } from "~modules/10-bookings/helpers/booking-code";
+import { SettingService } from "~modules/pre-built/11-settings/setting.service";
 import { MailService } from "~shared/mail/mail.service";
-import { PaymentStatus } from "./enums/payment-status.enum";
 import { Booking, BookingDocument } from "./schemas/booking.schema";
 
 @Injectable()
@@ -17,6 +17,7 @@ export class BookingService extends BaseService<BookingDocument> {
   constructor(
     @InjectModel(Booking.name) model: Model<BookingDocument>,
     private readonly mailService: MailService,
+    private readonly settingService: SettingService,
   ) {
     super(model);
     this.bookingService = this;
@@ -71,8 +72,12 @@ export class BookingService extends BaseService<BookingDocument> {
         },
       ],
     });
-    if (booking.paymentInfo?.status === PaymentStatus.PAID) {
-      await this.mailService.sendBookingMail(booking as any);
+    if (booking.status === BookingStatus.CONFIRMED) {
+      const setting = await this.settingService.findOne({});
+      this.mailService.sendBookingMail(
+        booking as any,
+        `${booking.customerInfo.email},${setting.email}`,
+      );
     }
     return booking;
   }

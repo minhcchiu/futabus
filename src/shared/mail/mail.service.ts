@@ -2,12 +2,13 @@ import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
 import { differenceInMinutes } from "date-fns";
 import { EnvStatic } from "src/configurations/env.static";
+import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { BookingDocument } from "~modules/10-bookings/schemas/booking.schema";
 import { SeatDocument } from "~modules/3-seats/schemas/seat.schema";
 import { StopLocationDocument } from "~modules/4-stop_locations/schemas/stop_location.schema";
 import { RouteDocument } from "~modules/5-routes/schemas/route.schema";
 import { TripDocument } from "~modules/7-trips/schemas/trip.schema";
-
+import { formatDateTime, formatMoney } from "~utils/format.util";
 @Injectable()
 export class MailService {
   constructor(private mailerService: MailerService) {}
@@ -96,26 +97,44 @@ export class MailService {
         };
       };
     },
+    to?: string,
   ) {
+    const paymentStatusText: Record<string, string> = {
+      UNPAID: "Chưa thanh toán",
+      PENDING: "Đang xử lý",
+      PAID: "Đã thanh toán",
+      FAILED: "Thanh toán lỗi",
+      REFUNDING: "Đang hoàn tiền",
+      REFUNDED: "Đã hoàn tiền",
+    };
+
+    const paymentMethodText: Record<PaymentMethod, string> = {
+      CASH: "Tiền mặt tại quầy",
+      BANK_TRANSFER: "Thanh toán VNPay",
+      VNPay: "Chuyển khoản ngân hàng",
+      MBBank: "Chuyển khoản MB Bank",
+    };
+
     const data = {
-      BOOKING_CODE: booking.departureTime,
+      BOOKING_CODE: booking.code,
       CUSTOMER_NAME: booking.customerInfo.name,
       CUSTOMER_PHONE: booking.customerInfo.phone,
       START_STOP: booking.tripId.routeId.startStopId.name,
       END_STOP: booking.tripId.routeId.endStopId.name,
       SEATS: booking.seatIds.map((s: any) => s.name).join(", "),
-      DEPARTURE_TIME: booking.departureTime,
-      PAYMENT_METHOD: booking.paymentInfo.method,
-      PAYMENT_STATUS_COLOR: booking.paymentInfo.status,
-      PAYMENT_STATUS: booking.paymentInfo.status,
-      AMOUNT: booking.amount,
-      EXPIRE_TIME: booking.expireAt,
+      DEPARTURE_TIME: formatDateTime(booking.departureTime),
+      PAYMENT_METHOD: paymentMethodText[booking.paymentInfo.method],
+      PAYMENT_STATUS_COLOR: paymentStatusText[booking.paymentInfo.status],
+      PAYMENT_STATUS: paymentStatusText[booking.paymentInfo.status],
+      AMOUNT: formatMoney(booking.amount),
+      EXPIRE_TIME: formatDateTime(booking.expireAt),
       YEAR: new Date().getFullYear(),
+      PAYMENT_IMAGE: booking.paymentInfo.image,
     };
 
     // options
     const options: ISendMailOptions = {
-      to: booking.customerInfo.email,
+      to: to || booking.customerInfo.email,
       subject: "Booking confirmation",
       template: "./booking/booking.template.hbs",
       context: data,
