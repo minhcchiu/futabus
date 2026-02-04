@@ -10,13 +10,12 @@ import {
 import { ObjectId } from "mongodb";
 import { IsObjectId } from "~common/validators/objectId";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
-import { PaymentMethod } from "../enums/payment-method.enum";
 import { PaymentStatus } from "../enums/payment-status.enum";
 
 export class PaymentInfoDto {
+  @IsOptional()
   @IsNotEmpty()
-  @IsEnum(PaymentMethod)
-  method: PaymentMethod;
+  method: string;
 
   @IsNotEmpty()
   @IsEnum(PaymentStatus)

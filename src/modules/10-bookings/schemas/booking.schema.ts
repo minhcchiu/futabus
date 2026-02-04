@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import { HydratedDocument, SchemaTypes } from "mongoose";
 import { CustomerInfoDto, PaymentInfoDto } from "~modules/10-bookings/dto/create-booking.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
-import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
 import { generateBookingCode, getNextSettBooking } from "~modules/10-bookings/helpers/booking-code";
 import { Seat } from "~modules/3-seats/schemas/seat.schema";
@@ -43,12 +42,12 @@ export class Booking {
   @Prop({ type: Number, required: true })
   amount: number;
 
-  @Prop({ type: Number, default: () => Date.now() + 5 * 60 * 1000 })
+  @Prop({ type: Number, default: () => Date.now() + 24 * 60 * 60 * 1000 })
   expireAt: number;
 
   @Prop({
     type: {
-      method: { type: String, enum: PaymentMethod },
+      method: { type: String },
       status: { type: String, enum: PaymentStatus, default: PaymentStatus.UNPAID },
       amount: { type: Number }, // Số tiền phải trả
       paidAmount: { type: Number }, // Số tiền đã trả

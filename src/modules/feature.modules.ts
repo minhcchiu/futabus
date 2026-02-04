@@ -15,6 +15,7 @@ import { WardModule } from "~modules/pre-built/10-wards/ward.module";
 import { SettingModule } from "~modules/pre-built/11-settings/setting.module";
 import { NotificationModule } from "~modules/pre-built/12-notifications/notification.module";
 import { GeneratorModule } from "~modules/pre-built/14-generators/generator.module";
+import { SepayModule } from "~modules/pre-built/15-sepay/sepay.module";
 import { PolicyModule } from "~modules/pre-built/3-policies/policy.module";
 import { MenuGroupModule } from "~modules/pre-built/4-menu-groups/menu-group.module";
 import { MenuModule } from "~modules/pre-built/4-menus/menu.module";
@@ -44,6 +45,7 @@ export const FeatureModules = [
   SettingModule,
   NotificationModule,
   GeneratorModule,
+  SepayModule,
 
   // features
   BusCompanyModule,

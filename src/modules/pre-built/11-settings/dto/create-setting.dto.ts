@@ -11,11 +11,11 @@ export class BankInfoDto {
 
   @IsOptional()
   @IsString()
-  accountHolder: string;
+  accountHolder?: string;
 
   @IsOptional()
   @IsString()
-  qr: string;
+  qr?: string;
 }
 export class CreateSettingDto {
   @IsOptional()
