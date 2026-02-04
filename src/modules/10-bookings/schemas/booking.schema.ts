@@ -8,6 +8,7 @@ import { generateBookingCode, getNextSettBooking } from "~modules/10-bookings/he
 import { Seat } from "~modules/3-seats/schemas/seat.schema";
 import { Trip } from "~modules/7-trips/schemas/trip.schema";
 import { TripStop } from "~modules/8-trip_stop/schemas/trip_stop.schema";
+import { SepayTransferNotify } from "~modules/pre-built/15-sepay/dto/create-sepay.dto";
 
 @Schema({
   timestamps: true,
@@ -53,14 +54,32 @@ export class Booking {
       paidAmount: { type: Number }, // Số tiền đã trả
       transactionId: { type: String }, // Mã giao dịch từ cổng
       provider: { type: String }, // momo | vnpay | zalopay
-      paidAt: { type: Date },
+      paidAt: { type: Number },
       refundAmount: { type: Number },
-      refundedAt: { type: Date },
+      refundedAt: { type: Number },
       note: { type: String }, // ghi chú quầy
       image: { type: String },
     },
   })
   paymentInfo: PaymentInfoDto;
+
+  @Prop({
+    type: [
+      {
+        gateway: String, // TPBank
+        transactionDate: String, // "2026-02-04 08:43:55"
+        accountNumber: String, // "00002709360"
+        code: String, // ML2602040
+        content: String, // ML2602040
+        transferAmount: Number, // 5000
+        referenceCode: String, // 373ITC1260350663
+        accumulated: Number, // 190882
+        sepayId: Number, // 41111631
+        createdAt: Number,
+      },
+    ],
+  })
+  sepayHistories: SepayTransferNotify[];
 
   @Prop({
     type: {

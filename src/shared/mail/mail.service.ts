@@ -129,7 +129,6 @@ export class MailService {
       AMOUNT: formatMoney(booking.amount),
       EXPIRE_TIME: formatDateTime(booking.expireAt),
       YEAR: new Date().getFullYear(),
-      PAYMENT_IMAGE: booking.paymentInfo.image,
     };
 
     // options

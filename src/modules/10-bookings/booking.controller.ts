@@ -9,15 +9,14 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { writeFile } from "fs";
 import { ObjectId } from "mongodb";
-import { join } from "path";
 import { ParseObjectIdPipe } from "src/utils/parse-object-id.pipe";
 import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
 import { GetAqp } from "~decorators/get-aqp.decorator";
 import { Public } from "~decorators/public.decorator";
 import { PaginationDto } from "~dto/pagination.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
+import { SepayTransferNotify } from "../pre-built/15-sepay/dto/create-sepay.dto";
 import { BookingService } from "./booking.service";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { UpdateBookingDto } from "./dto/update-booking.dto";
@@ -70,10 +69,8 @@ export class BookingController {
   @Public()
   @Post("/sepay/checkout")
   @HttpCode(HttpStatus.OK)
-  async checkoutBySepay(@Body() body: any) {
-    writeFile(join(process.cwd(), "public", "body.txt"), JSON.stringify(body), err => {
-      if (err) throw err;
-    });
+  async checkoutBySepay(@Body() body: SepayTransferNotify) {
+    return this.bookingService.checkoutBySepay(body);
   }
 
   @Public()

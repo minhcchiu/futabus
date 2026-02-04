@@ -6,9 +6,11 @@ import { BaseService } from "~base-inherit/base.service";
 import { UpdateBookingDto } from "~modules/10-bookings/dto/update-booking.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
 import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
+import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
 import { setCurrentBooking } from "~modules/10-bookings/helpers/booking-code";
 import { SettingService } from "~modules/pre-built/11-settings/setting.service";
 import { MailService } from "~shared/mail/mail.service";
+import { SepayTransferNotify } from "../pre-built/15-sepay/dto/create-sepay.dto";
 import { Booking, BookingDocument } from "./schemas/booking.schema";
 
 @Injectable()
@@ -122,5 +124,37 @@ export class BookingService extends BaseService<BookingDocument> {
     }
 
     return map;
+  }
+
+  async checkoutBySepay({ id: sepayId, ...input }: SepayTransferNotify) {
+    const booking: BookingDocument = await this.bookingService.updateOne(
+      {
+        code: input.code,
+      },
+      {
+        status: BookingStatus.CONFIRMED,
+        "paymentInfo.status": PaymentStatus.PAID,
+        "paymentInfo.paidAt": Date.now(),
+        $inc: {
+          "paymentInfo.paidAmount": input.transferAmount,
+        },
+        $push: {
+          sepayHistories: {
+            ...input,
+            sepayId,
+            createdAt: Date.now(),
+          },
+        },
+      },
+    );
+
+    const setting = await this.settingService.findOne({});
+    this.mailService
+      .sendBookingMail(booking as any, `${booking.customerInfo.email},${setting.email}`)
+      .catch(() => {
+        // ignore
+      });
+
+    return booking;
   }
 }
