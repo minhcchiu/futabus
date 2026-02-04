@@ -68,7 +68,7 @@ export class BookingController {
 
   //  ----- Method: POST -----
   @Public()
-  @Patch("/sepay/checkout")
+  @Post("/sepay/checkout")
   @HttpCode(HttpStatus.OK)
   async checkoutBySepay(@Body() body: any) {
     writeFile(path.join(process.cwd(), "public", "body.txt"), JSON.stringify(body), err => {
