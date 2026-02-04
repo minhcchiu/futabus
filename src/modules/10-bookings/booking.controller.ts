@@ -11,7 +11,7 @@ import {
 } from "@nestjs/common";
 import { writeFile } from "fs";
 import { ObjectId } from "mongodb";
-import path from "path";
+import { join } from "path";
 import { ParseObjectIdPipe } from "src/utils/parse-object-id.pipe";
 import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
 import { GetAqp } from "~decorators/get-aqp.decorator";
@@ -71,7 +71,7 @@ export class BookingController {
   @Post("/sepay/checkout")
   @HttpCode(HttpStatus.OK)
   async checkoutBySepay(@Body() body: any) {
-    writeFile(path.join(process.cwd(), "public", "body.txt"), JSON.stringify(body), err => {
+    writeFile(join(process.cwd(), "public", "body.txt"), JSON.stringify(body), err => {
       if (err) throw err;
     });
   }
