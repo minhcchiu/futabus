@@ -17,5 +17,5 @@ export class CreateRouteDto {
 
   @IsOptional()
   @IsNumber()
-  durationMinutes?: number;
+  durationHour?: number;
 }

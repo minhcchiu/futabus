@@ -19,7 +19,7 @@ export class Route {
   endStopId: ObjectId;
 
   @Prop({ type: Number })
-  durationMinutes?: number;
+  durationHour?: number;
 }
 
 export type RouteDocument = Route & HydratedDocument<Route>;
