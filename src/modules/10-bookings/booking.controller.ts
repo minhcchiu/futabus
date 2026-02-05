@@ -82,6 +82,13 @@ export class BookingController {
 
   //  ----- Method: PATCH -----
   @Public()
+  @Patch("/:id/hold")
+  @HttpCode(HttpStatus.OK)
+  async holdSlot(@Param("id", ParseObjectIdPipe) id: ObjectId, @Body() body: UpdateBookingDto) {
+    return this.bookingService.holdSlot(id, body);
+  }
+
+  @Public()
   @Patch("/:id/status")
   @HttpCode(HttpStatus.OK)
   async confirmPayment(

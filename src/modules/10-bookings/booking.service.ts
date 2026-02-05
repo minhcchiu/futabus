@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { ObjectId } from "mongodb";
 import { Model } from "mongoose";
@@ -23,6 +23,22 @@ export class BookingService extends BaseService<BookingDocument> {
   ) {
     super(model);
     this.bookingService = this;
+  }
+
+  async holdSlot(id: ObjectId, body: UpdateBookingDto) {
+    const booking: BookingDocument = await this.bookingService.findById(id);
+    if (!booking) throw new BadRequestException(`Booking not found`);
+
+    if (booking.status !== BookingStatus.PENDING) return;
+
+    return this.bookingService.updateById(id, {
+      status: BookingStatus.PENDING,
+      expireAt:
+        body.paymentInfo.method === PaymentMethod.CASH
+          ? Date.now() + 5 * 60 * 1000 // 5minutes
+          : Date.now() + 1 * 60 * 60 * 1000, // 1hours
+      "paymentInfo.method": body.paymentInfo.method,
+    });
   }
 
   async setSttCurrentBooking() {
