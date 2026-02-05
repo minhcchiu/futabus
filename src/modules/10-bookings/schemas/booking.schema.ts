@@ -34,6 +34,12 @@ export class Booking {
   @Prop({ type: SchemaTypes.ObjectId, ref: TripStop.name })
   toStopId: ObjectId;
 
+  @Prop({ type: String })
+  pickupCustomAddress: string;
+
+  @Prop({ type: String })
+  dropoffCustomAddress: string;
+
   @Prop({ type: Number })
   departureTime: number;
 
@@ -43,7 +49,7 @@ export class Booking {
   @Prop({ type: Number, required: true })
   amount: number;
 
-  @Prop({ type: Number, default: () => Date.now() + 24 * 60 * 60 * 1000 })
+  @Prop({ type: Number, default: () => Date.now() + 5 * 60 * 1000 }) // 5minutes
   expireAt: number;
 
   @Prop({

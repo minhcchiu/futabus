@@ -84,13 +84,21 @@ export class CreateBookingDto {
   @IsObjectId({ each: true })
   seatIds: ObjectId[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObjectId()
-  fromStopId: ObjectId;
+  fromStopId?: ObjectId;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObjectId()
-  toStopId: ObjectId;
+  toStopId?: ObjectId;
+
+  @IsOptional()
+  @IsString()
+  pickupCustomAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  dropoffCustomAddress?: string;
 
   @IsOptional()
   @IsEnum(BookingStatus)

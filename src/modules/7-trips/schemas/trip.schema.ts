@@ -5,6 +5,7 @@ import { BusCompany } from "~modules/1-bus_companies/schemas/bus_company.schema"
 import { Vehicle } from "~modules/2-vehicles/schemas/vehicle.schema";
 import { Route } from "~modules/5-routes/schemas/route.schema";
 import { TripStatus } from "~modules/7-trips/enums/trip-status.enum";
+import { Province } from "~modules/pre-built/8-provinces/schemas/province.schema";
 
 @Schema({
   timestamps: true,
@@ -17,6 +18,12 @@ export class Trip {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: Route.name })
   routeId: ObjectId;
+
+  @Prop({ type: [{ type: SchemaTypes.ObjectId, ref: Province.name }] })
+  departureProvinceIds: ObjectId[];
+
+  @Prop({ type: [{ type: SchemaTypes.ObjectId, ref: Province.name }] })
+  arrivalProvinceIds: ObjectId[];
 
   @Prop({ type: SchemaTypes.ObjectId, ref: Vehicle.name })
   vehicleId: ObjectId;

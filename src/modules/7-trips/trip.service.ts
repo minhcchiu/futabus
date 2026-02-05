@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { ObjectId } from "mongodb";
 import { Model } from "mongoose";
@@ -16,6 +16,7 @@ export class TripService extends BaseService<TripDocument> {
   constructor(
     @InjectModel(Trip.name) model: Model<TripDocument>,
     private readonly tripPriceService: TripPriceService,
+    @Inject(forwardRef(() => TripStopService))
     private readonly tripStopService: TripStopService,
     private readonly bookingService: BookingService,
     private readonly seatService: SeatService,

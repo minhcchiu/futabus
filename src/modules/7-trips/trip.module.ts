@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { BookingModule } from "~modules/10-bookings/booking.module";
 import { SeatModule } from "~modules/3-seats/seat.module";
@@ -17,7 +17,7 @@ import { TripService } from "./trip.service";
       },
     ]),
     TripPriceModule,
-    TripStopModule,
+    forwardRef(() => TripStopModule),
     BookingModule,
     SeatModule,
   ],

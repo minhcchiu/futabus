@@ -53,7 +53,7 @@ export class TripStopController {
   @Post("/")
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateTripStopDto) {
-    return this.tripStopService.create(body);
+    return this.tripStopService.createTripStop(body);
   }
 
   //  ----- Method: PATCH -----
@@ -61,7 +61,7 @@ export class TripStopController {
   @Patch("/:id")
   @HttpCode(HttpStatus.OK)
   async update(@Param("id", ParseObjectIdPipe) id: ObjectId, @Body() body: UpdateTripStopDto) {
-    return this.tripStopService.updateById(id, body);
+    return this.tripStopService.updateTripStop(id, body);
   }
 
   //  ----- Method: DELETE -----

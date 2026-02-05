@@ -31,4 +31,12 @@ export class CreateTripDto {
   @IsOptional()
   @IsEnum(TripStatus)
   status?: TripStatus;
+
+  @IsOptional()
+  @IsObjectId({ each: true })
+  departureProvinceIds: ObjectId[];
+
+  @IsOptional()
+  @IsObjectId({ each: true })
+  arrivalProvinceIds: ObjectId[];
 }
