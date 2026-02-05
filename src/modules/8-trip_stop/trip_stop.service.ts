@@ -32,12 +32,12 @@ export class TripStopService extends BaseService<TripStopDocument> {
         const provinceId = tripStop.stopId.provinceId;
         if (provinceId) {
           const $addToSet = {};
-          if (tripStop.arrivalTime) {
+          if (tripStop.departureTime) {
             Object.assign($addToSet, {
               departureProvinceIds: provinceId,
             });
           }
-          if (tripStop.departureTime) {
+          if (tripStop.arrivalTime) {
             Object.assign($addToSet, {
               arrivalProvinceIds: provinceId,
             });
