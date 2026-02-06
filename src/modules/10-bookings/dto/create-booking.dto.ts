@@ -17,11 +17,11 @@ export class PaymentInfoDto {
   @IsNotEmpty()
   method: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(PaymentStatus)
   status: PaymentStatus;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   amount: number;
 
