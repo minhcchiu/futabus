@@ -30,12 +30,21 @@ export class BookingController {
   @Get("/seats/booked")
   @HttpCode(HttpStatus.OK)
   async getSeatsBooked(@GetAqp() { filter }: PaginationDto) {
+    const tripId = filter.tripId;
+    const expireAtFilter = filter.expireAtFilter;
+
     return this.bookingService.distinct("seatIds", {
       $or: [
-        filter,
         {
-          status: { $in: [BookingStatus.COMPLETED, BookingStatus.CONFIRMED] },
-          tripId: filter.tripId,
+          tripId,
+          expireAt: expireAtFilter,
+          status: BookingStatus.PENDING,
+        },
+        {
+          tripId,
+          status: {
+            $in: [BookingStatus.CONFIRMED, BookingStatus.NO_SHOW, BookingStatus.COMPLETED],
+          },
         },
       ],
     });
