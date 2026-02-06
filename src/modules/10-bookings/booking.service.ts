@@ -145,7 +145,7 @@ export class BookingService extends BaseService<BookingDocument> {
   async checkoutBySepay({ id: sepayId, ...input }: SepayTransferNotify) {
     const booking: BookingDocument = await this.bookingService.updateOne(
       {
-        code: `ML${input.code}`,
+        code: input.code,
       },
       {
         status: BookingStatus.CONFIRMED,

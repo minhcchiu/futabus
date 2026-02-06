@@ -125,4 +125,7 @@ export class CreateBookingDto {
   @ValidateNested()
   @Type(() => CustomerInfoDto)
   customerInfo: CustomerInfoDto;
+
+  code?: string;
+  sttBooking?: number;
 }

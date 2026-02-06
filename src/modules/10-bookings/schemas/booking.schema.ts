@@ -4,7 +4,6 @@ import { HydratedDocument, SchemaTypes } from "mongoose";
 import { CustomerInfoDto, PaymentInfoDto } from "~modules/10-bookings/dto/create-booking.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
 import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
-import { generateBookingCode, getNextSettBooking } from "~modules/10-bookings/helpers/booking-code";
 import { Seat } from "~modules/3-seats/schemas/seat.schema";
 import { Trip } from "~modules/7-trips/schemas/trip.schema";
 import { TripStop } from "~modules/8-trip_stop/schemas/trip_stop.schema";
@@ -16,10 +15,10 @@ import { SepayTransferNotify } from "~modules/pre-built/15-sepay/dto/create-sepa
   collection: "bookings",
 })
 export class Booking {
-  @Prop({ type: String, index: true, default: generateBookingCode })
+  @Prop({ type: String, index: true })
   code: string;
 
-  @Prop({ type: Number, default: getNextSettBooking })
+  @Prop({ type: Number })
   sttBooking: number;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: Trip.name, required: true })

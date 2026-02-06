@@ -16,6 +16,7 @@ import { GetAqp } from "~decorators/get-aqp.decorator";
 import { Public } from "~decorators/public.decorator";
 import { PaginationDto } from "~dto/pagination.dto";
 import { BookingStatus } from "~modules/10-bookings/enums/booking-status.enum";
+import { generateBookingCode, getNextSettBooking } from "~modules/10-bookings/helpers/booking-code";
 import { SepayTransferNotify } from "../pre-built/15-sepay/dto/create-sepay.dto";
 import { BookingService } from "./booking.service";
 import { CreateBookingDto } from "./dto/create-booking.dto";
@@ -86,6 +87,9 @@ export class BookingController {
   @Post("/")
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateBookingDto) {
+    body.sttBooking = getNextSettBooking();
+    body.code = generateBookingCode(body.sttBooking);
+
     return this.bookingService.create(body);
   }
 
