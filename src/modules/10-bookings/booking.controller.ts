@@ -31,7 +31,7 @@ export class BookingController {
   @HttpCode(HttpStatus.OK)
   async getSeatsBooked(@GetAqp() { filter }: PaginationDto) {
     const tripId = filter.tripId;
-    const expireAtFilter = filter.expireAtFilter;
+    const expireAtFilter = filter.expireAt;
 
     return this.bookingService.distinct("seatIds", {
       $or: [
