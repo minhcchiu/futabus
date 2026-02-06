@@ -34,10 +34,10 @@ export class BookingService extends BaseService<BookingDocument> {
     return this.bookingService.updateById(id, {
       status: BookingStatus.PENDING,
       expireAt:
-        body.paymentInfo.method === PaymentMethod.CASH
-          ? Date.now() + 5 * 60 * 1000 // 5minutes
-          : Date.now() + 1 * 60 * 60 * 1000, // 1hours
-      "paymentInfo.method": body.paymentInfo.method,
+        body.paymentInfo?.method === PaymentMethod.CASH
+          ? Date.now() + 1 * 60 * 60 * 1000 // 1hours
+          : Date.now() + 5 * 60 * 1000, // 5minutes
+      "paymentInfo.method": body.paymentInfo?.method,
     });
   }
 
