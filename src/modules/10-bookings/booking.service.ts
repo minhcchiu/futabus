@@ -9,8 +9,8 @@ import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
 import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
 import { setCurrentBooking } from "~modules/10-bookings/helpers/booking-code";
 import { SettingService } from "~modules/pre-built/11-settings/setting.service";
+import { SepayTransferNotify } from "~modules/pre-built/15-sepay/dto/create-sepay.dto";
 import { MailService } from "~shared/mail/mail.service";
-import { SepayTransferNotify } from "../pre-built/15-sepay/dto/create-sepay.dto";
 import { Booking, BookingDocument } from "./schemas/booking.schema";
 
 @Injectable()
@@ -145,7 +145,7 @@ export class BookingService extends BaseService<BookingDocument> {
   async checkoutBySepay({ id: sepayId, ...input }: SepayTransferNotify) {
     const booking: BookingDocument = await this.bookingService.updateOne(
       {
-        code: input.code,
+        code: `ML${input.code}`,
       },
       {
         status: BookingStatus.CONFIRMED,
