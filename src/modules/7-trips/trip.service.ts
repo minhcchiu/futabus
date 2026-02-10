@@ -13,6 +13,7 @@ import { arrayToMap } from "~utils/common.util";
 import { Trip, TripDocument } from "./schemas/trip.schema";
 @Injectable()
 export class TripService extends BaseService<TripDocument> {
+  private readonly tripService: TripService;
   constructor(
     @InjectModel(Trip.name) model: Model<TripDocument>,
     private readonly tripPriceService: TripPriceService,
@@ -22,64 +23,68 @@ export class TripService extends BaseService<TripDocument> {
     private readonly seatService: SeatService,
   ) {
     super(model);
+    this.tripService = this;
   }
 
   async getLocationsFromTo() {
-    const locations = await this.tripStopService.aggregate([
+    const locations = await this.tripService.aggregate([
+      // {
+      //   $match: {
+      //     arrivalTime: { $gt: Date.now() },
+      //   },
+      // },
       // Bước 1: Lookup StopLocation cho startStop để lấy provinceId
-      {
-        $lookup: {
-          from: "stop_locations",
-          localField: "startStopId",
-          foreignField: "_id",
-          as: "startStop",
-        },
-      },
-      { $unwind: "$startStop" }, // Unwind để truy cập provinceId
-      // Bước 2: Lookup StopLocation cho endStop để lấy provinceId
-      {
-        $lookup: {
-          from: "stop_locations",
-          localField: "endStopId",
-          foreignField: "_id",
-          as: "endStop",
-        },
-      },
-      { $unwind: "$endStop" }, // Unwind để truy cập provinceId
-      // Bước 3: Group theo provinceFrom (startStop.provinceId), tích lũy unique provincesTo (endStop.provinceId)
+      { $unwind: "$departureProvinceIds" },
+
+      // Gom các mảng arrival lại
       {
         $group: {
-          _id: "$startStop.provinceId",
-          provincesToIds: { $addToSet: "$endStop.provinceId" },
+          _id: "$departureProvinceIds",
+          arrivalProvinceIds: { $push: "$arrivalProvinceIds" },
         },
       },
-      // Bước 4: Lookup thông tin provinceFrom từ Province
+
+      // Flatten + remove duplicate
       {
-        $lookup: {
-          from: "provinces", // Tên collection của Province
-          localField: "_id",
-          foreignField: "_id",
-          as: "provinceFrom",
+        $project: {
+          arrivalProvinceIds: {
+            $reduce: {
+              input: "$arrivalProvinceIds",
+              initialValue: [],
+              in: { $setUnion: ["$$value", "$$this"] },
+            },
+          },
         },
       },
-      { $unwind: "$provinceFrom" }, // Unwind để biến thành object
-      // Bước 5: Lookup provinces cho provincesTo với pipeline
+
+      // Populate departureProvince
       {
         $lookup: {
           from: "provinces",
-          let: { toIds: "$provincesToIds" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $in: ["$_id", "$$toIds"] },
-              },
-            },
-          ],
-          as: "provincesTo",
+          localField: "_id",
+          foreignField: "_id",
+          as: "departureProvince",
         },
       },
-      // Bước 7: Sort tùy chọn (ví dụ: theo provinceFrom.name)
-      { $sort: { "provinceFrom.nameEn": 1 } },
+      { $unwind: "$departureProvince" },
+
+      // Populate arrivalProvinceIds
+      {
+        $lookup: {
+          from: "provinces",
+          localField: "arrivalProvinceIds",
+          foreignField: "_id",
+          as: "arrivalProvinces",
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          provinceFrom: "$departureProvince",
+          provincesTo: "$arrivalProvinces",
+        },
+      },
     ]);
 
     return locations;

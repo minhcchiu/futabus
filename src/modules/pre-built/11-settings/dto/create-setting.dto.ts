@@ -73,7 +73,4 @@ export class CreateSettingDto {
   @IsOptional()
   @IsString()
   banner: string;
-
-  @IsOptional()
-  bankInfo: BankInfoDto;
 }

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { BankInfoDto } from "../dto/create-setting.dto";
 
 @Schema({
   timestamps: true,
@@ -49,9 +48,6 @@ export class Setting {
 
   @Prop({ type: String })
   privacyPolicy: string;
-
-  @Prop({ type: Object })
-  bankInfo: BankInfoDto;
 }
 
 export type SettingDocument = Setting & HydratedDocument<Setting>;

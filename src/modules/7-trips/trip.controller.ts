@@ -25,6 +25,13 @@ export class TripController {
 
   //  ----- Method: GET -----
   @Public()
+  @Get("/locations")
+  @HttpCode(HttpStatus.OK)
+  async getLocationsFromTo() {
+    return this.tripService.getLocationsFromTo();
+  }
+
+  @Public()
   @Get("/paginate")
   @HttpCode(HttpStatus.OK)
   async paginate(@GetAqp() { filter, ...options }: PaginationDto) {
