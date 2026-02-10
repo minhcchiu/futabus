@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ObjectId } from "mongodb";
 import { IsObjectId } from "~common/validators/objectId";
 import { TripStatus } from "../enums/trip-status.enum";
@@ -15,6 +15,10 @@ export class CreateTripDto {
   @IsNotEmpty()
   @IsObjectId()
   vehicleId: ObjectId;
+
+  @IsOptional()
+  @IsString()
+  driverPhone: string;
 
   @IsOptional()
   @IsNumber()

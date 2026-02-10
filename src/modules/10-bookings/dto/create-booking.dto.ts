@@ -67,7 +67,7 @@ export class CustomerInfoDto {
   @IsString()
   phone: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   email: string;
 

@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { differenceInMinutes } from "date-fns";
 import { EnvStatic } from "src/configurations/env.static";
 import { PaymentMethod } from "~modules/10-bookings/enums/payment-method.enum";
+import { PaymentStatus } from "~modules/10-bookings/enums/payment-status.enum";
 import { BookingDocument } from "~modules/10-bookings/schemas/booking.schema";
 import { SeatDocument } from "~modules/3-seats/schemas/seat.schema";
 import { StopLocationDocument } from "~modules/4-stop_locations/schemas/stop_location.schema";
@@ -91,6 +92,7 @@ export class MailService {
     booking: BookingDocument & {
       seatIds: SeatDocument[];
       tripId: TripDocument & {
+        driverPhone?: string;
         routeId: RouteDocument & {
           startStopId: StopLocationDocument;
           endStopId: StopLocationDocument;
@@ -99,8 +101,11 @@ export class MailService {
     },
     to?: string,
   ) {
+    /* ========================
+    TEXT MAP
+  ======================== */
     const paymentStatusText: Record<string, string> = {
-      UNPAID: "Chưa thanh toán",
+      UNPAID: "Chờ thanh toán",
       PENDING: "Đang xử lý",
       PAID: "Đã thanh toán",
       FAILED: "Thanh toán lỗi",
@@ -108,39 +113,69 @@ export class MailService {
       REFUNDED: "Đã hoàn tiền",
     };
 
-    const paymentMethodText: Record<PaymentMethod, string> = {
-      CASH: "Tiền mặt tại quầy",
-      BANK_TRANSFER: "Thanh toán VNPay",
-      VNPay: "Chuyển khoản ngân hàng",
-      MBBank: "Chuyển khoản MB Bank",
+    const paymentStatusColor: Record<string, string> = {
+      UNPAID: "#f59e0b", // vàng
+      PENDING: "#f59e0b",
+      PAID: "#16a34a", // xanh
+      FAILED: "#dc2626", // đỏ
+      REFUNDING: "#0ea5e9", // xanh dương
+      REFUNDED: "#6b7280", // xám
     };
 
+    /* ========================
+    PAYMENT NOTE
+  ======================== */
+    const isPaid = booking.paymentInfo.status === PaymentStatus.PAID;
+
+    const paymentNote = isPaid
+      ? "✅ Thanh toán thành công. Vui lòng đến điểm đón trước giờ khởi hành 15 phút."
+      : `⏳ Vui lòng thanh toán trước <strong>${formatDateTime(
+          booking.expireAt,
+        )}</strong> để giữ chỗ.`;
+
+    /* ========================
+    TEMPLATE DATA
+  ======================== */
     const data = {
       BOOKING_CODE: booking.code,
+
+      // customer
       CUSTOMER_NAME: booking.customerInfo.name,
       CUSTOMER_PHONE: booking.customerInfo.phone,
+
+      // trip
       START_STOP: booking.tripId.routeId.startStopId.name,
       END_STOP: booking.tripId.routeId.endStopId.name,
-      SEATS: booking.seatIds.map((s: any) => s.name).join(", "),
+      SEATS: booking.seatIds.map((s: any) => s.name || s.code).join(", "),
       DEPARTURE_TIME: formatDateTime(booking.departureTime),
-      PAYMENT_METHOD: paymentMethodText[booking.paymentInfo.method],
-      PAYMENT_STATUS_COLOR: paymentStatusText[booking.paymentInfo.status],
+      DRIVER_PHONE: booking.tripId.driverPhone || "Đang cập nhật",
+
+      // payment
+      PAYMENT_METHOD:
+        booking.paymentInfo.method === PaymentMethod.CASH
+          ? "Tiền mặt tại quầy"
+          : `Thanh toán qua ${booking.paymentInfo.method}`,
       PAYMENT_STATUS: paymentStatusText[booking.paymentInfo.status],
+      PAYMENT_STATUS_COLOR: paymentStatusColor[booking.paymentInfo.status],
+      PAYMENT_NOTE: paymentNote,
       AMOUNT: formatMoney(booking.amount),
-      EXPIRE_TIME: formatDateTime(booking.expireAt),
+
       YEAR: new Date().getFullYear(),
     };
 
-    // options
+    /* ========================
+    MAIL OPTIONS
+  ======================== */
     const options: ISendMailOptions = {
       to: to || booking.customerInfo.email,
-      subject: "Booking confirmation",
+      subject: isPaid
+        ? "Xác nhận vé – Thanh toán thành công"
+        : "Thông tin đơn đặt vé – Chờ thanh toán",
       template: "./booking/booking.template.hbs",
       context: data,
-      from: `no-reply@futabus.com`,
+      from: "no-reply@futabus.com",
     };
 
-    // Send
     return this.sendMail(options);
   }
 }

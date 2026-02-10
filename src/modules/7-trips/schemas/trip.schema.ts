@@ -28,6 +28,9 @@ export class Trip {
   @Prop({ type: SchemaTypes.ObjectId, ref: Vehicle.name })
   vehicleId: ObjectId;
 
+  @Prop({ type: String })
+  driverPhone: string;
+
   @Prop({ type: Number })
   departureTime: number;
 

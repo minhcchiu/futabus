@@ -30,6 +30,7 @@ export class RouteController {
   async getLocationsFromTo() {
     return this.routeService.getLocationsFromTo();
   }
+
   @Public()
   @Get("/paginate")
   @HttpCode(HttpStatus.OK)

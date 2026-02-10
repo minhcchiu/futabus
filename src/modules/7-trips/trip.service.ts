@@ -24,6 +24,67 @@ export class TripService extends BaseService<TripDocument> {
     super(model);
   }
 
+  async getLocationsFromTo() {
+    const locations = await this.tripStopService.aggregate([
+      // Bước 1: Lookup StopLocation cho startStop để lấy provinceId
+      {
+        $lookup: {
+          from: "stop_locations",
+          localField: "startStopId",
+          foreignField: "_id",
+          as: "startStop",
+        },
+      },
+      { $unwind: "$startStop" }, // Unwind để truy cập provinceId
+      // Bước 2: Lookup StopLocation cho endStop để lấy provinceId
+      {
+        $lookup: {
+          from: "stop_locations",
+          localField: "endStopId",
+          foreignField: "_id",
+          as: "endStop",
+        },
+      },
+      { $unwind: "$endStop" }, // Unwind để truy cập provinceId
+      // Bước 3: Group theo provinceFrom (startStop.provinceId), tích lũy unique provincesTo (endStop.provinceId)
+      {
+        $group: {
+          _id: "$startStop.provinceId",
+          provincesToIds: { $addToSet: "$endStop.provinceId" },
+        },
+      },
+      // Bước 4: Lookup thông tin provinceFrom từ Province
+      {
+        $lookup: {
+          from: "provinces", // Tên collection của Province
+          localField: "_id",
+          foreignField: "_id",
+          as: "provinceFrom",
+        },
+      },
+      { $unwind: "$provinceFrom" }, // Unwind để biến thành object
+      // Bước 5: Lookup provinces cho provincesTo với pipeline
+      {
+        $lookup: {
+          from: "provinces",
+          let: { toIds: "$provincesToIds" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$_id", "$$toIds"] },
+              },
+            },
+          ],
+          as: "provincesTo",
+        },
+      },
+      // Bước 7: Sort tùy chọn (ví dụ: theo provinceFrom.name)
+      { $sort: { "provinceFrom.nameEn": 1 } },
+    ]);
+
+    return locations;
+  }
+
   async assignTripPrices(trips: TripDocument[]) {
     const tripPrices: TripPriceDocument[] = await this.tripPriceService.findMany({
       tripId: { $in: trips.map(v => v._id) },

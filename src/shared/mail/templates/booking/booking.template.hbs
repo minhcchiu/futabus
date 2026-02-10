@@ -3,6 +3,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thông tin đơn đặt vé</title>
+
     <style type="text/css">
       @media only screen and (max-width: 620px) {
         .main-container {
@@ -17,7 +18,6 @@
         .info-table td:first-child {
           font-weight: bold;
           padding-bottom: 2px !important;
-          width: auto !important;
         }
         .content-padding {
           padding: 16px !important;
@@ -28,26 +28,26 @@
       }
     </style>
   </head>
+
   <body
     style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;"
   >
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center" class="main-container" style="padding:24px 12px">
-          <!-- CONTAINER -->
           <table
             width="100%"
-            style="max-width:600px; background:#ffffff; border-radius:12px; overflow:hidden; margin:0 auto;"
+            style="max-width:600px; background:#ffffff; border-radius:12px; overflow:hidden;"
             cellpadding="0"
             cellspacing="0"
           >
             <!-- HEADER -->
             <tr>
               <td
-                style="background:#16a34a; color:#ffffff; padding:20px; text-align:center"
                 class="header"
+                style="background:#16a34a; color:#ffffff; padding:20px; text-align:center"
               >
-                <h2 style="margin:0; font-size:20px">XÁC NHẬN ĐƠN ĐẶT VÉ</h2>
+                <h2 style="margin:0">XÁC NHẬN ĐƠN ĐẶT VÉ</h2>
                 <p style="margin:6px 0 0; font-size:13px">
                   Mã đơn:
                   <strong>{{BOOKING_CODE}}</strong>
@@ -59,7 +59,7 @@
             <tr>
               <td class="content-padding" style="padding:20px">
                 <!-- CUSTOMER -->
-                <h3 style="margin:0 0 8px; font-size:16px">👤 Thông tin khách hàng</h3>
+                <h3 style="margin:0 0 8px">👤 Thông tin khách hàng</h3>
                 <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
                     <td>Họ tên:</td>
@@ -71,10 +71,10 @@
                   </tr>
                 </table>
 
-                <hr style="margin:16px 0; border:none; border-top:1px solid #eee" />
+                <hr style="margin:16px 0; border-top:1px solid #eee" />
 
                 <!-- TRIP -->
-                <h3 style="margin:0 0 8px; font-size:16px">🚌 Thông tin chuyến</h3>
+                <h3 style="margin:0 0 8px">🚌 Thông tin chuyến</h3>
                 <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
                     <td>Tuyến:</td>
@@ -88,12 +88,19 @@
                     <td>Khởi hành:</td>
                     <td>{{DEPARTURE_TIME}}</td>
                   </tr>
+                  <tr>
+                    <td>Tài xế:</td>
+                    <td>
+                      📞
+                      <strong>{{DRIVER_PHONE}}</strong>
+                    </td>
+                  </tr>
                 </table>
 
-                <hr style="margin:16px 0; border:none; border-top:1px solid #eee" />
+                <hr style="margin:16px 0; border-top:1px solid #eee" />
 
                 <!-- PAYMENT -->
-                <h3 style="margin:0 0 8px; font-size:16px">💳 Thanh toán</h3>
+                <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
                 <table width="100%" class="info-table" style="font-size:14px">
                   <tr>
                     <td>Phương thức:</td>
@@ -102,7 +109,9 @@
                   <tr>
                     <td>Trạng thái:</td>
                     <td>
-                      <strong style="color: {{PAYMENT_STATUS_COLOR}}">{{PAYMENT_STATUS}}</strong>
+                      <strong style="color: {{PAYMENT_STATUS_COLOR}}">
+                        {{PAYMENT_STATUS}}
+                      </strong>
                     </td>
                   </tr>
                   <tr>
@@ -113,12 +122,11 @@
                   </tr>
                 </table>
 
-                <hr style="margin:20px 0; border:none; border-top:1px solid #eee" />
+                <hr style="margin:20px 0; border-top:1px solid #eee" />
 
-                <!-- FOOTER NOTE -->
-                <p style="font-size:13px; color:#666; margin:0">
-                  ⏳ Đơn sẽ tự động huỷ nếu chưa thanh toán trước:
-                  <strong>{{EXPIRE_TIME}}</strong>
+                <!-- PAYMENT NOTE -->
+                <p style="font-size:13px; color:#555; margin:0">
+                  {{{PAYMENT_NOTE}}}
                 </p>
               </td>
             </tr>

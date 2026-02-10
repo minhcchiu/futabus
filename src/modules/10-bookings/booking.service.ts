@@ -31,14 +31,50 @@ export class BookingService extends BaseService<BookingDocument> {
 
     if (booking.status !== BookingStatus.PENDING) return;
 
-    return this.bookingService.updateById(id, {
-      status: BookingStatus.PENDING,
-      expireAt:
-        body.paymentInfo?.method === PaymentMethod.CASH
-          ? Date.now() + 1 * 60 * 60 * 1000 // 1hours
-          : Date.now() + 5 * 60 * 1000, // 5minutes
-      "paymentInfo.method": body.paymentInfo?.method,
-    });
+    const updated = await this.bookingService.updateById(
+      id,
+      {
+        status: BookingStatus.PENDING,
+        expireAt:
+          body.paymentInfo?.method === PaymentMethod.CASH
+            ? Date.now() + 1 * 60 * 60 * 1000 // 1hours
+            : Date.now() + 5 * 60 * 1000, // 5minutes
+        "paymentInfo.method": body.paymentInfo?.method,
+      },
+      {
+        new: true,
+        populate: [
+          {
+            path: "tripId",
+            populate: {
+              path: "routeId",
+              populate: [
+                {
+                  path: "startStopId",
+                },
+                {
+                  path: "endStopId",
+                },
+              ],
+            },
+          },
+          {
+            path: "seatIds",
+          },
+        ],
+      },
+    );
+
+    if (updated.paymentInfo?.method === PaymentMethod.CASH && updated.customerInfo?.email) {
+      const setting = await this.settingService.findOne({});
+      this.mailService
+        .sendBookingMail(updated as any, `${updated.customerInfo.email},${setting.email}`)
+        .catch(() => {
+          // ignore
+        });
+    }
+
+    return updated;
   }
 
   async setSttCurrentBooking() {
