@@ -8,7 +8,7 @@ module.exports = {
       watch: false,
       time: true,
       max_memory_restart: "1G",
-      cwd: "/home/futabus/source",
+      cwd: "/home/futabus",
       error_file: "/home/futabus/logs/web.err.log",
       out_file: "/home/futabus/logs/web.out.log",
       exec_mode: "cluster",
