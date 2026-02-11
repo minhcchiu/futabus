@@ -8,9 +8,9 @@ module.exports = {
       watch: false,
       time: true,
       max_memory_restart: "1G",
-      cwd: "/home/ubuntu/futabus/source",
-      error_file: "/home/ubuntu/futabus/logs/web.err.log",
-      out_file: "/home/ubuntu/futabus/logs/web.out.log",
+      cwd: "/home/futabus/source",
+      error_file: "/home/futabus/logs/web.err.log",
+      out_file: "/home/futabus/logs/web.out.log",
       exec_mode: "cluster",
       env: {
         NODE_ENV: "production",
