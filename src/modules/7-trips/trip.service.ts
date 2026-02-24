@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { ObjectId } from "mongodb";
 import { Model } from "mongoose";
@@ -10,6 +10,7 @@ import { TripStopService } from "~modules/8-trip_stop/trip_stop.service";
 import { TripPriceDocument } from "~modules/9-trip_prices/schemas/trip_price.schema";
 import { TripPriceService } from "~modules/9-trip_prices/trip_price.service";
 import { arrayToMap } from "~utils/common.util";
+import { CopyTripToDatesDto } from "./dto/copy-trip-to-dates.dto";
 import { Trip, TripDocument } from "./schemas/trip.schema";
 @Injectable()
 export class TripService extends BaseService<TripDocument> {
@@ -159,4 +160,87 @@ export class TripService extends BaseService<TripDocument> {
     return trips;
   }
   /* eslint-enable @typescript-eslint/ban-ts-comment */
+
+  async createTripsFromBaseTrip({ tripId, dates }: CopyTripToDatesDto) {
+    // Get the base trip to copy
+    const baseTrip = await this.tripService.findById(tripId);
+    if (!baseTrip) {
+      throw new BadRequestException("Base trip not found");
+    }
+
+    // Get base trip stops and prices
+    const [baseTripStops, baseTripPrices] = await Promise.all([
+      this.tripStopService.findMany({ tripId }),
+      this.tripPriceService.findMany({ tripId }),
+    ]);
+
+    // Calculate time difference for each date
+    const baseDepartureTime = baseTrip.departureTime;
+    const baseDate = new Date(baseDepartureTime).setHours(0, 0, 0, 0);
+
+    const tripsWithTimeDiff = dates.map(date => {
+      const targetDate = new Date(date).setHours(0, 0, 0, 0);
+      const timeDifference = targetDate - baseDate;
+
+      return {
+        tripData: {
+          companyId: baseTrip.companyId,
+          routeId: baseTrip.routeId,
+          vehicleId: baseTrip.vehicleId,
+          driverPhone: baseTrip.driverPhone,
+          departureTime: baseTrip.departureTime + timeDifference,
+          arrivalTime: baseTrip.arrivalTime + timeDifference,
+          price: baseTrip.price,
+          status: baseTrip.status,
+          departureProvinceIds: baseTrip.departureProvinceIds,
+          arrivalProvinceIds: baseTrip.arrivalProvinceIds,
+        },
+        timeDifference,
+      };
+    });
+
+    const trips = tripsWithTimeDiff.map(item => item.tripData);
+
+    // Create the new trips
+    const createdTrips = await this.createMany(trips);
+
+    // Copy trip stops for each new trip
+    const tripStopsToCreate = [];
+    const tripPricesToCreate = [];
+
+    createdTrips.forEach((newTrip, index) => {
+      const timeDifference = tripsWithTimeDiff[index].timeDifference;
+
+      // Copy trip stops with adjusted times
+      baseTripStops.forEach(baseStop => {
+        tripStopsToCreate.push({
+          tripId: newTrip._id,
+          stopId: baseStop.stopId,
+          arrivalTime: baseStop.arrivalTime ? baseStop.arrivalTime + timeDifference : undefined,
+          departureTime: baseStop.departureTime
+            ? baseStop.departureTime + timeDifference
+            : undefined,
+        });
+      });
+
+      // Copy trip prices
+      baseTripPrices.forEach(basePrice => {
+        tripPricesToCreate.push({
+          tripId: newTrip._id,
+          fromStopId: basePrice.fromStopId,
+          toStopId: basePrice.toStopId,
+          price: basePrice.price,
+          seatId: basePrice.seatId,
+        });
+      });
+    });
+
+    // Create all trip stops and prices
+    await Promise.all([
+      this.tripStopService.createMany(tripStopsToCreate),
+      this.tripPriceService.createMany(tripPricesToCreate),
+    ]);
+
+    return createdTrips;
+  }
 }

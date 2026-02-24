@@ -15,6 +15,7 @@ import { stringIdToObjectId } from "src/utils/stringId_to_objectId";
 import { GetAqp } from "~decorators/get-aqp.decorator";
 import { Public } from "~decorators/public.decorator";
 import { PaginationDto } from "~dto/pagination.dto";
+import { CopyTripToDatesDto } from "~modules/7-trips/dto/copy-trip-to-dates.dto";
 import { CreateTripDto } from "./dto/create-trip.dto";
 import { UpdateTripDto } from "./dto/update-trip.dto";
 import { TripService } from "./trip.service";
@@ -70,6 +71,7 @@ export class TripController {
     const trips = await this.tripService.findMany(filter, { ...options, lean: true });
     await Promise.all([
       this.tripService.assignTripPrices(trips),
+      this.tripService.assignTripStops(trips),
       this.tripService.assignEmptySeatCount(trips),
     ]);
 
@@ -82,6 +84,13 @@ export class TripController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateTripDto) {
     return this.tripService.create(body);
+  }
+
+  @Public()
+  @Post("/many")
+  @HttpCode(HttpStatus.CREATED)
+  async createTripsFromBaseTrip(@Body() body: CopyTripToDatesDto) {
+    return this.tripService.createTripsFromBaseTrip(body);
   }
 
   //  ----- Method: PATCH -----
